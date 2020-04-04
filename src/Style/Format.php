@@ -135,5 +135,4 @@ class Format
 
         return $this;
     }
-
 }

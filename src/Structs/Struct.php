@@ -1,8 +1,6 @@
 <?php
 
-
 namespace FFILibXlsxWriter\Structs;
-
 
 use FFI;
 use FFI\CData;
@@ -61,5 +59,4 @@ abstract class Struct
 
         $this->struct->{$name} = $name;
     }
-
 }

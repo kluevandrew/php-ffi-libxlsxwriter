@@ -58,5 +58,4 @@ class FFILibXlsxWriter
 
         return [$firstRow, $firstCol, $lastRow, $lastCol];
     }
-
 }

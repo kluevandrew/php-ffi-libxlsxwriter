@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @see http://libxlsxwriter.github.io/worksheet_protection_8c-example.html
  */
@@ -18,7 +19,7 @@ $unlocked->setUnlocked();
 $hidden = $workbook->addFormat();
 $hidden->setHidden();
 /* Widen the first column to make the text clearer. */
-$worksheet->setColumn(0, 0, 40, NULL);
+$worksheet->setColumn(0, 0, 40, null);
 /* Turn worksheet protection on without a password. */
 $worksheet->protect($password = null, $options = null);
 /* Write a locked, unlocked and hidden cell. */

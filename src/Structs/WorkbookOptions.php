@@ -51,5 +51,4 @@ class WorkbookOptions extends Struct
 
         parent::free();
     }
-
 }

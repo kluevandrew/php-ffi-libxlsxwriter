@@ -4,9 +4,9 @@ namespace FFILibXlsxWriter\Structs;
 
 class Underline
 {
-    const NONE = 0;
-    const SINGLE = 1;
-    const DOUBLE = 2;
-    const SINGLE_ACCOUNTING = 3;
-    const DOUBLE_ACCOUNTING = 4;
+    public const NONE = 0;
+    public const SINGLE = 1;
+    public const DOUBLE = 2;
+    public const SINGLE_ACCOUNTING = 3;
+    public const DOUBLE_ACCOUNTING = 4;
 }

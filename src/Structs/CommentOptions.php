@@ -1,8 +1,6 @@
 <?php
 
-
 namespace FFILibXlsxWriter\Structs;
-
 
 use FFI;
 use FFILibXlsxWriter\FFILibXlsxWriter;
@@ -26,9 +24,9 @@ use FFILibXlsxWriter\FFILibXlsxWriter;
  */
 class CommentOptions extends Struct
 {
-    const COMMENT_DISPLAY_DEFAULT = 0;
-    const COMMENT_DISPLAY_HIDDEN = 1;
-    const COMMENT_DISPLAY_VISIBLE = 2;
+    public const COMMENT_DISPLAY_DEFAULT = 0;
+    public const COMMENT_DISPLAY_HIDDEN = 1;
+    public const COMMENT_DISPLAY_VISIBLE = 2;
 
     /**
      * CommentOptions constructor.
@@ -36,7 +34,7 @@ class CommentOptions extends Struct
     public function __construct()
     {
         $ffi = FFILibXlsxWriter::ffi();
-        $this->struct = $ffi->new('struct lxw_datetime', false, false);
+        $this->struct = $ffi->new('struct lxw_comment_options', false, false);
         $this->pointer = FFI::addr($this->struct);
     }
 }

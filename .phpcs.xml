@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<ruleset name="PHP_CodeSniffer">
+
+    <rule ref="PSR12"/>
+
+    <file>src</file>
+    <file>tests</file>
+    <file>demos</file>
+
+    <arg value="p"/>
+</ruleset>

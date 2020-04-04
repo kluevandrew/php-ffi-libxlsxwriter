@@ -1,7 +1,9 @@
 <?php
+
 /**
  * @see http://libxlsxwriter.github.io/tutorial03.html
  */
+
 use FFILibXlsxWriter\FFILibXlsxWriter;
 use FFILibXlsxWriter\Structs\Align;
 use FFILibXlsxWriter\Structs\Color;

@@ -1,7 +1,9 @@
 <?php
+
 /**
  * @see http://libxlsxwriter.github.io/tutorial03.html
  */
+
 use FFILibXlsxWriter\FFILibXlsxWriter;
 use FFILibXlsxWriter\Workbook;
 
@@ -30,8 +32,8 @@ $bold->setBold();
 $money = $workbook->addFormat();
 $money->setNumFormat('$#,##0');
 
-$worksheet->writeString( $row, $col,     "Item", $bold);
-$worksheet->writeString( $row, $col + 1, "Cost", $bold);
+$worksheet->writeString($row, $col, "Item", $bold);
+$worksheet->writeString($row, $col + 1, "Cost", $bold);
 
 /* Iterate over the data and write it out element by element. */
 for ($i = 0; $i < 4; $i++) {

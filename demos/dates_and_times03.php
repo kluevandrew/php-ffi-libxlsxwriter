@@ -1,7 +1,9 @@
 <?php
+
 /**
  * @see http://libxlsxwriter.github.io/dates_and_times03_8c-example.html
  */
+
 use FFILibXlsxWriter\FFILibXlsxWriter;
 use FFILibXlsxWriter\Structs\Align;
 use FFILibXlsxWriter\Workbook;
@@ -44,7 +46,7 @@ $bold->setBold();
 $worksheet->writeString($row, $col, "Formatted date", $bold);
 $worksheet->writeString($row, $col + 1, "Format", $bold);
 /* Widen the first column to make the text clearer. */
-$worksheet->setColumn( 0, 1, 20, null);
+$worksheet->setColumn(0, 1, 20, null);
 /* Write the same date and time using each of the above formats. */
 for ($i = 0; $i < 14; $i++) {
     $row++;
@@ -53,7 +55,7 @@ for ($i = 0; $i < 14; $i++) {
     $format->setNumFormat($date_formats[$i]);
     $format->setAlign(Align::LEFT);
     /* Write the datetime with each format. */
-    $worksheet->writeDatetime( $row, $col, $datetime, $format);
+    $worksheet->writeDatetime($row, $col, $datetime, $format);
     /* Also write the format string for comparison. */
     $worksheet->writeString($row, $col + 1, $date_formats[$i], null);
 }

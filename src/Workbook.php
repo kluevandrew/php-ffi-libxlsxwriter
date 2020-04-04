@@ -99,5 +99,4 @@ class Workbook
 
         return $this->defaultUrlFormat;
     }
-
 }

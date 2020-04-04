@@ -1,7 +1,9 @@
 <?php
+
 /**
  * @see http://libxlsxwriter.github.io/panes_8c-example.html
  */
+
 use FFILibXlsxWriter\FFILibXlsxWriter;
 use FFILibXlsxWriter\Structs\Align;
 use FFILibXlsxWriter\Structs\Border;
@@ -19,13 +21,15 @@ $worksheet3 = $workbook->addWorksheet("Panes 3");
 $worksheet4 = $workbook->addWorksheet("Panes 4");
 
 /* Set up some formatting and text to highlight the panes. */
-$header = $workbook->addFormat();;
+$header = $workbook->addFormat();
+;
 $header->setAlign(Align::CENTER);
 $header->setAlign(Align::VERTICAL_CENTER);
 $header->setFgColor(0xD7E4BC);
 $header->setBold();
 $header->setBorder(Border::THIN);
-$center = $workbook->addFormat();;
+$center = $workbook->addFormat();
+;
 $center->setAlign(Align::CENTER);
 /*
  * Example 1. Freeze pane on the top row.
@@ -47,9 +51,9 @@ for ($row = 1; $row < 100; $row++) {
 /*
  * Example 2. Freeze pane on the left column.
  */
-$worksheet2->freezePanes( 0, 1);
+$worksheet2->freezePanes(0, 1);
 /* Some sheet formatting. */
-$worksheet2->setColumn(0, 0, 16, NULL);
+$worksheet2->setColumn(0, 0, 16, null);
 $worksheet2->setSelection(4, 3, 4, 3);
 /* Some worksheet text to demonstrate scrolling. */
 for ($row = 0; $row < 50; $row++) {
@@ -61,10 +65,10 @@ for ($row = 0; $row < 50; $row++) {
 /*
  * Example 3. Freeze pane on the top row and left column.
  */
-$worksheet3->freezePanes( 1, 1);
+$worksheet3->freezePanes(1, 1);
 /* Some sheet formatting. */
-$worksheet3->setColumn(0, 25, 16, NULL);
-$worksheet3->setRow(0, 20, NULL);
+$worksheet3->setColumn(0, 25, 16, null);
+$worksheet3->setRow(0, 20, null);
 $worksheet3->writeString(0, 0, "", $header);
 $worksheet3->setSelection(4, 3, 4, 3);
 /* Some worksheet text to demonstrate scrolling. */

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace FFILibXlsxWriter\Structs;
-
 
 use FFI;
 use FFILibXlsxWriter\FFILibXlsxWriter;

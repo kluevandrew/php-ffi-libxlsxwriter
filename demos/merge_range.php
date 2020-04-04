@@ -1,7 +1,9 @@
 <?php
+
 /**
  * @see http://libxlsxwriter.github.io/merge_range_8c-example.html
  */
+
 use FFILibXlsxWriter\FFILibXlsxWriter;
 use FFILibXlsxWriter\Structs\Align;
 use FFILibXlsxWriter\Structs\Border;
@@ -23,7 +25,7 @@ $mergeFormat->setBold();
 $mergeFormat->setBgColor(Color::YELLOW);
 $mergeFormat->setBorder(Border::THIN);
 /* Increase the cell size of the merged cells to highlight the formatting. */
-$worksheet->setColumn( 1, 3, 12, null);
+$worksheet->setColumn(1, 3, 12, null);
 $worksheet->setRow(3, 30, null);
 $worksheet->setRow(6, 30, null);
 $worksheet->setRow(7, 30, null);

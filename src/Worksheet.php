@@ -7,7 +7,6 @@ use FFILibXlsxWriter\Structs\Protection;
 use FFILibXlsxWriter\Style\Format;
 use FFILibXlsxWriter\Structs\CommentOptions;
 use FFILibXlsxWriter\Structs\DateTime;
-use FFILibXlsxWriter\Structs\RichStringTupleCollection;
 
 class Worksheet
 {
@@ -116,8 +115,7 @@ class Worksheet
         int $lastCol,
         string $formula,
         Format $format = null
-    ): self
-    {
+    ): self {
         FFILibXlsxWriter::ffi()->worksheet_write_array_formula(
             $this->cWorksheet,
             $firstRow,
@@ -234,8 +232,7 @@ class Worksheet
         int $col,
         string $richString,
         Format $format = null
-    ): self
-    {
+    ): self {
         throw new \Exception('Rich strings are not implemented yet');
     }
 
@@ -357,8 +354,7 @@ class Worksheet
         int $lastCol,
         string $string,
         Format $format = null
-    ): self
-    {
+    ): self {
         FFILibXlsxWriter::ffi()->worksheet_merge_range(
             $this->cWorksheet,
             $firstRow,
@@ -385,8 +381,7 @@ class Worksheet
         int $firstCol,
         int $lastRow,
         int $lastCol
-    ): self
-    {
+    ): self {
         FFILibXlsxWriter::ffi()->worksheet_autofilter(
             $this->cWorksheet,
             $firstRow,
@@ -407,8 +402,7 @@ class Worksheet
     public function protect(
         string $password = null,
         Protection $options = null
-    ): self
-    {
+    ): self {
         FFILibXlsxWriter::ffi()->worksheet_protect(
             $this->cWorksheet,
             $password,
@@ -448,8 +442,7 @@ class Worksheet
         int $firstCol,
         int $lastRow,
         int $lastCol
-    ): self
-    {
+    ): self {
         FFILibXlsxWriter::ffi()->worksheet_set_selection(
             $this->cWorksheet,
             $firstRow,
