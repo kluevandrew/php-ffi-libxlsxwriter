@@ -1,0 +1,14 @@
+{
+    "name": "kluevandrew/php-ffi-libxlsxwriter",
+    "description": "todo",
+    "type": "library",
+    "require": {
+        "php": ">=7.4",
+        "ext-ffi": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "FFILibXlsxWriter\\": "src/"
+        }
+    }
+}
