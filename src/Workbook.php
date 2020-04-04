@@ -4,10 +4,16 @@ namespace FFILibXlsxWriter;
 
 use FFI\CData;
 use FFILibXlsxWriter\Style\Format;
+use FFILibXlsxWriter\Types\LXWStruct;
 
 class Workbook
 {
     private CData $cWorkbook;
+
+    /**
+     * @var LXWStruct[]
+     */
+    protected array $internalStructs = [];
 
     /**
      * Workbook constructor.
@@ -49,6 +55,25 @@ class Workbook
     public function close(): void
     {
         FFILibXlsxWriter::ffi()->workbook_close($this->cWorkbook);
+        $this->free();
+    }
+
+    /**
+     * Clean memory
+     */
+    protected function free(): void
+    {
+        foreach ($this->internalStructs as $struct) {
+            $struct->free();
+        }
+    }
+
+    /**
+     * @param LXWStruct $struct
+     */
+    public function addStructure(LXWStruct $struct)
+    {
+        $this->internalStructs[] = $struct;
     }
 
 }

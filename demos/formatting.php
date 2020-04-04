@@ -1,6 +1,6 @@
 <?php
 /**
- * @see http://libxlsxwriter.github.io/tutorial02.html
+ * @see http://libxlsxwriter.github.io/tutorial03.html
  */
 use FFILibXlsxWriter\FFILibXlsxWriter;
 use FFILibXlsxWriter\Workbook;
@@ -40,7 +40,7 @@ for ($i = 0; $i < 4; $i++) {
     $worksheet->writeNumber($row, $col + 1, $expenses[$i]['cost'], $money);
 }
 /* Write a total using a formula. */
-$worksheet->writeString($row, $col, "Total", $bold);
-$worksheet->writeFormula($row, $col + 1, "=SUM(B1:B4)", $money);
+$worksheet->writeString($row + 1, $col, "Total", $bold);
+$worksheet->writeFormula($row + 1, $col + 1, "=SUM(B2:B5)", $money);
 
 $workbook->close();

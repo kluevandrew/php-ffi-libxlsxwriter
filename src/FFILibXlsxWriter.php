@@ -3,6 +3,7 @@
 namespace FFILibXlsxWriter;
 
 use FFI;
+use FFI\CData;
 
 class FFILibXlsxWriter
 {
@@ -31,7 +32,7 @@ class FFILibXlsxWriter
     }
 
     /**
-     * @return FFI|mixed Mixed is add for suppers PHPStorm warnings
+     * @return FFI|CData|mixed Mixed is add for suppers PHPStorm warnings
      */
     public static function ffi(): FFI
     {
