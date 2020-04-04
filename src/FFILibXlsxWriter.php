@@ -39,4 +39,24 @@ class FFILibXlsxWriter
         return self::$ffi;
     }
 
+    public static function cell(string $address): array
+    {
+        $ffi = self::ffi();
+        $firstRow = $ffi->lxw_name_to_row($address);
+        $firstCol = $ffi->lxw_name_to_col($address);
+
+        return [$firstRow, $firstCol];
+    }
+
+    public static function range(string $range): array
+    {
+        $ffi = self::ffi();
+        $firstRow = $ffi->lxw_name_to_row($range);
+        $firstCol = $ffi->lxw_name_to_col($range);
+        $lastRow = $ffi->lxw_name_to_row_2($range);
+        $lastCol = $ffi->lxw_name_to_col_2($range);
+
+        return [$firstRow, $firstCol, $lastRow, $lastCol];
+    }
+
 }

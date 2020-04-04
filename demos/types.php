@@ -4,7 +4,7 @@
  */
 
 use FFILibXlsxWriter\FFILibXlsxWriter;
-use FFILibXlsxWriter\Types\LXWDateTime;
+use FFILibXlsxWriter\Structs\DateTime;
 use FFILibXlsxWriter\Workbook;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -19,10 +19,10 @@ $col = 0;
 $i = 0;
 
 $expenses = [
-    ["item" => "Rent", "datetime" => new LXWDateTime(2020, 1, 13), "cost" => 1000],
-    ["item" => "Gas", "datetime" => new LXWDateTime(2020, 1, 14), "cost" => 100],
-    ["item" => "Food", "datetime" => new LXWDateTime(2020, 1, 16), "cost" => 300],
-    ["item" => "Gym", "datetime" => new LXWDateTime(2020, 1, 20), "cost" => 50],
+    ["item" => "Rent", "datetime" => new DateTime(2020, 1, 13), "cost" => 1000],
+    ["item" => "Gas", "datetime" => new DateTime(2020, 1, 14), "cost" => 100],
+    ["item" => "Food", "datetime" => new DateTime(2020, 1, 16), "cost" => 300],
+    ["item" => "Gym", "datetime" => new DateTime(2020, 1, 20), "cost" => 50],
 ];
 
 $bold = $workbook->addFormat();

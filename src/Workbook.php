@@ -3,25 +3,36 @@
 namespace FFILibXlsxWriter;
 
 use FFI\CData;
+use FFILibXlsxWriter\Structs\WorkbookOptions;
 use FFILibXlsxWriter\Style\Format;
-use FFILibXlsxWriter\Types\LXWStruct;
+use FFILibXlsxWriter\Structs\Struct;
 
 class Workbook
 {
     private CData $cWorkbook;
 
     /**
-     * @var LXWStruct[]
+     * @var Struct[]
      */
     protected array $internalStructs = [];
 
     /**
+     * @var Format|null
+     */
+    private ?Format $defaultUrlFormat = null;
+
+    /**
      * Workbook constructor.
      * @param string $path
+     * @param WorkbookOptions|null $options
      */
-    public function __construct(string $path)
+    public function __construct(string $path, WorkbookOptions $options = null)
     {
-        $this->cWorkbook = FFILibXlsxWriter::ffi()->workbook_new($path);
+        if (null !== $options) {
+            $this->cWorkbook = FFILibXlsxWriter::ffi()->workbook_new_opt($path, $options->getPointer());
+        } else {
+            $this->cWorkbook = FFILibXlsxWriter::ffi()->workbook_new($path);
+        }
     }
 
     /**
@@ -69,11 +80,24 @@ class Workbook
     }
 
     /**
-     * @param LXWStruct $struct
+     * @param Struct $struct
      */
-    public function addStructure(LXWStruct $struct)
+    public function addStructure(Struct $struct)
     {
         $this->internalStructs[] = $struct;
+    }
+
+    /**
+     * @return Format
+     */
+    public function getDefaultUrlFormat(): Format
+    {
+        if (null === $this->defaultUrlFormat) {
+            $cFormat = FFILibXlsxWriter::ffi()->workbook_get_default_url_format($this->cWorkbook);
+            $this->defaultUrlFormat = new Format($this, $cFormat);
+        }
+
+        return $this->defaultUrlFormat;
     }
 
 }

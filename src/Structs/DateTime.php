@@ -1,12 +1,21 @@
 <?php
 
-namespace FFILibXlsxWriter\Types;
+namespace FFILibXlsxWriter\Structs;
 
-use DateTime;
+use DateTime as  PHPDateTime;
 use FFI;
 use FFILibXlsxWriter\FFILibXlsxWriter;
 
-class LXWDateTime extends LXWStruct
+/**
+ * Class DateTime
+ * @property int $year
+ * @property int $month
+ * @property int $day
+ * @property int $hour
+ * @property int $min
+ * @property float $sec
+ */
+class DateTime extends Struct
 {
     /**
      * LXWDateTime constructor.
@@ -23,10 +32,6 @@ class LXWDateTime extends LXWStruct
         $this->struct = $ffi->new('struct lxw_datetime', false, false);
         $this->pointer = FFI::addr($this->struct);
 
-        $this->struct->hour = $hour;
-        $this->struct->min = $min;
-        $this->struct->sec = $sec;
-
         $this->struct->year = $year;
         $this->struct->month = $month;
         $this->struct->day = $day;
@@ -35,11 +40,10 @@ class LXWDateTime extends LXWStruct
         $this->struct->sec = $sec;
     }
 
-    public static function fromDateTime(DateTime $dateTime): self
+    public static function fromDateTime(PHPDateTime $dateTime): self
     {
         list($y, $m, $d, $h, $i, $s) = explode('|', $dateTime->format('Y|m|d|H|i|s.v'));
 
         return new self($y, $m, $d, $h, $i, $s);
     }
-
 }

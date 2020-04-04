@@ -14,11 +14,12 @@ class Format
     /**
      * Format constructor.
      * @param Workbook $workbook
+     * @param CData|null $cFormat
      */
-    public function __construct(Workbook $workbook)
+    public function __construct(Workbook $workbook, CData $cFormat = null)
     {
         $this->workbook = $workbook;
-        $this->cFormat = FFILibXlsxWriter::ffi()->workbook_add_format($this->workbook->getCWorkbook());
+        $this->cFormat = $cFormat ?? FFILibXlsxWriter::ffi()->workbook_add_format($this->workbook->getCWorkbook());
     }
 
     /**
@@ -50,6 +51,42 @@ class Format
     public function setNumFormat(string $numFormat): self
     {
         FFILibXlsxWriter::ffi()->format_set_num_format($this->cFormat, $numFormat);
+
+        return $this;
+    }
+
+    public function setItalic(): self
+    {
+        FFILibXlsxWriter::ffi()->format_set_italic($this->cFormat);
+
+        return $this;
+    }
+
+    public function setFontColor(int $color): self
+    {
+        FFILibXlsxWriter::ffi()->format_set_font_color($this->cFormat, $color);
+
+
+        return $this;
+    }
+
+    public function setAlign(int $align): self
+    {
+        FFILibXlsxWriter::ffi()->format_set_align($this->cFormat, $align);
+
+        return $this;
+    }
+
+    public function setFontScript(int $fontScript): self
+    {
+        FFILibXlsxWriter::ffi()->format_set_font_script($this->cFormat, $fontScript);
+
+        return $this;
+    }
+
+    public function setUnderline(int $underline): self
+    {
+        FFILibXlsxWriter::ffi()->format_set_underline($this->cFormat, $underline);
 
         return $this;
     }
