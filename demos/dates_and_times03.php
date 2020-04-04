@@ -2,7 +2,6 @@
 /**
  * @see http://libxlsxwriter.github.io/dates_and_times03_8c-example.html
  */
-
 use FFILibXlsxWriter\FFILibXlsxWriter;
 use FFILibXlsxWriter\Structs\Align;
 use FFILibXlsxWriter\Workbook;

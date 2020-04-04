@@ -3,6 +3,7 @@
 namespace FFILibXlsxWriter;
 
 use FFI\CData;
+use FFILibXlsxWriter\Structs\Protection;
 use FFILibXlsxWriter\Style\Format;
 use FFILibXlsxWriter\Structs\CommentOptions;
 use FFILibXlsxWriter\Structs\DateTime;
@@ -315,6 +316,163 @@ class Worksheet
             $lastCol,
             $width,
             $format ? $format->getCFormat() : null
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param int $row
+     * @param int $height
+     * @param Format|null $format
+     * @return $this
+     * @see http://libxlsxwriter.github.io/worksheet_8h.html#ab9b7fb95e1bd9b0da70befd0d37a9173
+     */
+    public function setRow(int $row, int $height, Format $format = null): self
+    {
+        FFILibXlsxWriter::ffi()->worksheet_set_row(
+            $this->cWorksheet,
+            $row,
+            $height,
+            $format ? $format->getCFormat() : null
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param int $firstRow
+     * @param int $firstCol
+     * @param int $lastRow
+     * @param int $lastCol
+     * @param string $string
+     * @param Format|null $format
+     * @return $this
+     * @see http://libxlsxwriter.github.io/worksheet_8h.html#ad5a2a09ec65c0f286b756235c7327225
+     */
+    public function mergeRange(
+        int $firstRow,
+        int $firstCol,
+        int $lastRow,
+        int $lastCol,
+        string $string,
+        Format $format = null
+    ): self
+    {
+        FFILibXlsxWriter::ffi()->worksheet_merge_range(
+            $this->cWorksheet,
+            $firstRow,
+            $firstCol,
+            $lastRow,
+            $lastCol,
+            $string,
+            $format ? $format->getCFormat() : null
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param int $firstRow
+     * @param int $firstCol
+     * @param int $lastRow
+     * @param int $lastCol
+     * @return $this
+     * @see http://libxlsxwriter.github.io/worksheet_8h.html#a4e2b1de34e96331000a996f512aecfcf
+     */
+    public function autofilter(
+        int $firstRow,
+        int $firstCol,
+        int $lastRow,
+        int $lastCol
+    ): self
+    {
+        FFILibXlsxWriter::ffi()->worksheet_autofilter(
+            $this->cWorksheet,
+            $firstRow,
+            $firstCol,
+            $lastRow,
+            $lastCol
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param string $password
+     * @param Protection|null $options
+     * @return $this
+     * @see http://libxlsxwriter.github.io/worksheet_8h.html#a1b49e135d4debcdb25941f2f40f04cb0
+     */
+    public function protect(
+        string $password = null,
+        Protection $options = null
+    ): self
+    {
+        FFILibXlsxWriter::ffi()->worksheet_protect(
+            $this->cWorksheet,
+            $password,
+            $options ? $options->getPointer() : null
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param int $row
+     * @param int $col
+     * @return $this
+     * @see http://libxlsxwriter.github.io/worksheet_8h.html#a7e52f1eecb20fe4f9e6223bcf195103b
+     */
+    public function freezePanes(int $row, int $col): self
+    {
+        FFILibXlsxWriter::ffi()->worksheet_freeze_panes(
+            $this->cWorksheet,
+            $row,
+            $col
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param int $firstRow
+     * @param int $firstCol
+     * @param int $lastRow
+     * @param int $lastCol
+     * @return $this
+     * @see http://libxlsxwriter.github.io/worksheet_8h.html#a62368aa313184d72a9ca2b1cf5de9a8a
+     */
+    public function setSelection(
+        int $firstRow,
+        int $firstCol,
+        int $lastRow,
+        int $lastCol
+    ): self
+    {
+        FFILibXlsxWriter::ffi()->worksheet_set_selection(
+            $this->cWorksheet,
+            $firstRow,
+            $firstCol,
+            $lastRow,
+            $lastCol
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param float $vertical
+     * @param float $horizontal
+     * @return $this
+     * @see http://libxlsxwriter.github.io/worksheet_8h.html#a9f4a3845529bcc2922b89bdb450ded32
+     */
+    public function splitPanes(float $vertical, float $horizontal): self
+    {
+        FFILibXlsxWriter::ffi()->worksheet_split_panes(
+            $this->cWorksheet,
+            $vertical,
+            $horizontal
         );
 
         return $this;

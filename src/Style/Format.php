@@ -6,8 +6,14 @@ use FFI\CData;
 use FFILibXlsxWriter\FFILibXlsxWriter;
 use FFILibXlsxWriter\Workbook;
 
+/**
+ * Class Format
+ */
 class Format
 {
+    /**
+     * @var Workbook
+     */
     private Workbook $workbook;
     private CData $cFormat;
 
@@ -87,6 +93,45 @@ class Format
     public function setUnderline(int $underline): self
     {
         FFILibXlsxWriter::ffi()->format_set_underline($this->cFormat, $underline);
+
+        return $this;
+    }
+
+    public function setBgColor(int $color): self
+    {
+        FFILibXlsxWriter::ffi()->format_set_bg_color($this->cFormat, $color);
+
+        return $this;
+    }
+
+    /**
+     * @param int $color
+     * @return $this
+     */
+    public function setFgColor(int $color): self
+    {
+        FFILibXlsxWriter::ffi()->format_set_fg_color($this->cFormat, $color);
+
+        return $this;
+    }
+
+    public function setBorder(int $border): self
+    {
+        FFILibXlsxWriter::ffi()->format_set_border($this->cFormat, $border);
+
+        return $this;
+    }
+
+    public function setUnlocked(): self
+    {
+        FFILibXlsxWriter::ffi()->format_set_unlocked($this->cFormat);
+
+        return $this;
+    }
+
+    public function setHidden(): self
+    {
+        FFILibXlsxWriter::ffi()->format_set_hidden($this->cFormat);
 
         return $this;
     }

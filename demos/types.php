@@ -2,7 +2,6 @@
 /**
  * @see http://libxlsxwriter.github.io/tutorial03.html
  */
-
 use FFILibXlsxWriter\FFILibXlsxWriter;
 use FFILibXlsxWriter\Structs\DateTime;
 use FFILibXlsxWriter\Workbook;

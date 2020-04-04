@@ -2,7 +2,6 @@
 /**
  * @see http://libxlsxwriter.github.io/hyperlinks_8c-example.html#a12
  */
-
 use FFILibXlsxWriter\FFILibXlsxWriter;
 use FFILibXlsxWriter\Structs\Color;
 use FFILibXlsxWriter\Structs\Underline;
@@ -13,8 +12,9 @@ require_once __DIR__ . '/../vendor/autoload.php';
 FFILibXlsxWriter::init();
 
 $workbook = new Workbook(__DIR__ . '/output/hyperlinks.xlsx');
-$worksheet = $workbook->addWorksheet(); /* Get the default url format (used in the overwriting examples below). */
+$worksheet = $workbook->addWorksheet();
 
+/* Get the default url format (used in the overwriting examples below). */
 $urlFormat = $workbook->getDefaultUrlFormat();
 /* Create a user defined link format. */
 $redFormat = $workbook->addFormat();

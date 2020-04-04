@@ -19,5 +19,5 @@ class Color
     const RED = 0xFF0000;
     const SILVER = 0xC0C0C0;
     const WHITE = 0xFFFFFF;
-    const YELLOW = 0xFFFF0;
+    const YELLOW = 0xFFFF00;
 }

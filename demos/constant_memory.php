@@ -2,7 +2,6 @@
 /**
  * @see http://libxlsxwriter.github.io/constant_memory_8c-example.html
  */
-
 use FFILibXlsxWriter\FFILibXlsxWriter;
 use FFILibXlsxWriter\Structs\WorkbookOptions;
 use FFILibXlsxWriter\Workbook;

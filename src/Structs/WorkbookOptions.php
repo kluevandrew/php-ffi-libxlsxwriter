@@ -3,6 +3,7 @@
 namespace FFILibXlsxWriter\Structs;
 
 use FFI;
+use FFI\CData;
 use FFILibXlsxWriter\FFILibXlsxWriter;
 
 /**
@@ -13,7 +14,10 @@ use FFILibXlsxWriter\FFILibXlsxWriter;
  */
 class WorkbookOptions extends Struct
 {
-    private $tmpDirPointer;
+    /**
+     * @var CData|null
+     */
+    private ?CData $tmpDirPointer = null;
 
     /**
      * LXWDateTime constructor.
@@ -35,6 +39,9 @@ class WorkbookOptions extends Struct
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public function free(): void
     {
         if ($this->tmpDirPointer !== null && !FFI::isNull($this->tmpDirPointer)) {
