@@ -50,8 +50,10 @@ class CharPointer
         $ffi = FFILibXlsxWriter::ffi();
 
         $strlen = strlen($string);
+
+        // char* should be a pointer to a Null-terminated string
         $this->size = $strlen + 1;
-        $this->pointer = $ffi->malloc($this->size * FFI::sizeof(FFI::type('char')));
+        $this->pointer = $ffi->calloc($this->size, FFI::sizeof(FFI::type('char')));
         $this->pointer = FFI::cast('char*', $this->pointer);
 
         for ($i = 0; $i < $strlen; $i++) {
