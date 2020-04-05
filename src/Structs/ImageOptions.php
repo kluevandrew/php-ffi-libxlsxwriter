@@ -35,5 +35,4 @@ class ImageOptions extends Struct
     {
         return ['description', 'url', 'tip'];
     }
-
 }

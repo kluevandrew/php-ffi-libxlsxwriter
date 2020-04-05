@@ -18,7 +18,7 @@ class FFILibXlsxWriter
         self::$ffi = FFI::cdef(
             self::getHeaders(),
             $libraryPath ?? self::getLibraryPath(),
-            );
+        );
     }
 
     protected static function getHeaders(): string

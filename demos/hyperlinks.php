@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @see http://libxlsxwriter.github.io/hyperlinks_8c-example.html#a12
+ * @see http://libxlsxwriter.github.io/hyperlinks_8c-example.html
  */
 
 use FFILibXlsxWriter\FFILibXlsxWriter;

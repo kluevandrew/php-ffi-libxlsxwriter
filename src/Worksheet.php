@@ -3,6 +3,7 @@
 namespace FFILibXlsxWriter;
 
 use FFI\CData;
+use FFILibXlsxWriter\Structs\ImageBuffer;
 use FFILibXlsxWriter\Structs\ImageOptions;
 use FFILibXlsxWriter\Structs\Protection;
 use FFILibXlsxWriter\Structs\RichString;
@@ -507,13 +508,69 @@ class Worksheet
      * @return $this
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#a0b05e75e2c2a5c3452374714cdb2b79b
      */
-    public function insertImageOpt(int $row, int $col, string $path, ImageOptions $options)
+    public function insertImageOpt(int $row, int $col, string $path, ImageOptions $options): self
     {
+        $this->workbook->addStructure($options);
+
         FFILibXlsxWriter::ffi()->worksheet_insert_image_opt(
             $this->cWorksheet,
             $row,
             $col,
             $path,
+            $options->getPointer()
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param int $row
+     * @param int $col
+     * @param ImageBuffer $imageBuffer
+     * @param int $imageSize
+     * @return $this
+     * @see http://libxlsxwriter.github.io/worksheet_8h.html#aebd5cc71a42ab0e4a9ce45fe9a6f6908
+     */
+    public function insertImageBuffer(int $row, int $col, ImageBuffer $imageBuffer, int $imageSize): self
+    {
+        $this->workbook->addStructure($imageBuffer);
+
+        FFILibXlsxWriter::ffi()->worksheet_insert_image_buffer(
+            $this->cWorksheet,
+            $row,
+            $col,
+            $imageBuffer->getStruct(),
+            $imageSize
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param int $row
+     * @param int $col
+     * @param ImageBuffer $imageBuffer
+     * @param int $imageSize
+     * @param ImageOptions $options
+     * @return $this
+     * @see http://libxlsxwriter.github.io/worksheet_8h.html#af4c868a5cf0eaab8740c1f966ba5561c
+     */
+    public function insertImageBufferOpt(
+        int $row,
+        int $col,
+        ImageBuffer $imageBuffer,
+        int $imageSize,
+        ImageOptions $options
+    ): self {
+        $this->workbook->addStructure($imageBuffer);
+        $this->workbook->addStructure($options);
+
+        FFILibXlsxWriter::ffi()->worksheet_insert_image_buffer_opt(
+            $this->cWorksheet,
+            $row,
+            $col,
+            $imageBuffer->getStruct(),
+            $imageSize,
             $options->getPointer()
         );
 

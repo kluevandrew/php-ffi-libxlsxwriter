@@ -77,7 +77,7 @@ abstract class Struct
             return;
         }
 
-        $this->struct->{$name} = $name;
+        $this->struct->{$name} = $value;
     }
 
     /**
