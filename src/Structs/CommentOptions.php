@@ -34,7 +34,7 @@ class CommentOptions extends Struct
     public function __construct()
     {
         $ffi = FFILibXlsxWriter::ffi();
-        $this->struct = $ffi->new('struct lxw_comment_options', false, false);
+        $this->struct = $ffi->new('struct lxw_comment_options');
         $this->pointer = FFI::addr($this->struct);
     }
 }

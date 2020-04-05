@@ -29,7 +29,7 @@ class DateTime extends Struct
     public function __construct(int $year, int $month, int $day, int $hour = 0, int $min = 0, float $sec = 0)
     {
         $ffi = FFILibXlsxWriter::ffi();
-        $this->struct = $ffi->new('struct lxw_datetime', false, false);
+        $this->struct = $ffi->new('struct lxw_datetime');
         $this->pointer = FFI::addr($this->struct);
 
         $this->struct->year = $year;

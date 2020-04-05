@@ -17,11 +17,6 @@ abstract class Struct
      */
     protected CData $pointer;
 
-    public function __destruct()
-    {
-        $this->free();
-    }
-
     public function getPointer(): CData
     {
         return $this->pointer;
@@ -30,13 +25,6 @@ abstract class Struct
     public function getStruct(): CData
     {
         return $this->struct;
-    }
-
-    public function free(): void
-    {
-        if (!FFI::isNull($this->pointer)) {
-            FFI::free($this->pointer);
-        }
     }
 
     public function __get($name)

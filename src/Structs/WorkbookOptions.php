@@ -28,7 +28,7 @@ class WorkbookOptions extends Struct
     public function __construct(bool $constantMemory = false, bool $useZip64 = false, string $tmpDir = null)
     {
         $ffi = FFILibXlsxWriter::ffi();
-        $this->struct = $ffi->new('struct lxw_workbook_options', false, false);
+        $this->struct = $ffi->new('struct lxw_workbook_options');
         $this->pointer = FFI::addr($this->struct);
 
         $this->struct->constant_memory = $constantMemory;

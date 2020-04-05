@@ -4,6 +4,7 @@ namespace FFILibXlsxWriter;
 
 use FFI\CData;
 use FFILibXlsxWriter\Structs\Protection;
+use FFILibXlsxWriter\Structs\RichString;
 use FFILibXlsxWriter\Style\Format;
 use FFILibXlsxWriter\Structs\CommentOptions;
 use FFILibXlsxWriter\Structs\DateTime;
@@ -224,16 +225,23 @@ class Worksheet
      * @param mixed $richString
      * @param Format|null $format
      * @return $this
-     * @throws \Exception
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#a62bf44845ce9dcc505bf228999db5afa
      */
     public function writeRichString(
         int $row,
         int $col,
-        string $richString,
+        RichString $richString,
         Format $format = null
     ): self {
-        throw new \Exception('Rich strings are not implemented yet');
+        FFILibXlsxWriter::ffi()->worksheet_write_rich_string(
+            $this->cWorksheet,
+            $row,
+            $col,
+            $richString->getPointer(),
+            $format ? $format->getCFormat() : null
+        );
+
+        return $this;
     }
 
     /**
@@ -466,6 +474,25 @@ class Worksheet
             $this->cWorksheet,
             $vertical,
             $horizontal
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param int $row
+     * @param int $col
+     * @param string $path
+     * @return $this
+     * @see http://libxlsxwriter.github.io/worksheet_8h.html#a4529d77bcefcf478b8209f46fe730f6f
+     */
+    public function insertImage(int $row, int $col, string $path): self
+    {
+        FFILibXlsxWriter::ffi()->worksheet_insert_image(
+            $this->cWorksheet,
+            $row,
+            $col,
+            $path
         );
 
         return $this;

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @see http://libxlsxwriter.github.io/tutorial01.html
+ * @see http://libxlsxwriter.github.io/tutorial1_8c-example.html
  */
 
 use FFILibXlsxWriter\FFILibXlsxWriter;
@@ -11,7 +11,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 FFILibXlsxWriter::init();
 
-$workbook = new Workbook(__DIR__ . '/output/simple.xlsx');
+$workbook = new Workbook(__DIR__ . '/output/tutorial1.xlsx');
 $worksheet = $workbook->addWorksheet('First worksheet');
 
 $col = 0;
