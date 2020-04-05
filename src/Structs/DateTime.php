@@ -18,7 +18,7 @@ use FFILibXlsxWriter\FFILibXlsxWriter;
 class DateTime extends Struct
 {
     /**
-     * LXWDateTime constructor.
+     * DateTime constructor.
      * @param int $year
      * @param int $month
      * @param int $day

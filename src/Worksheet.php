@@ -3,6 +3,7 @@
 namespace FFILibXlsxWriter;
 
 use FFI\CData;
+use FFILibXlsxWriter\Structs\ImageOptions;
 use FFILibXlsxWriter\Structs\Protection;
 use FFILibXlsxWriter\Structs\RichString;
 use FFILibXlsxWriter\Style\Format;
@@ -493,6 +494,27 @@ class Worksheet
             $row,
             $col,
             $path
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param int $row
+     * @param int $col
+     * @param string $path
+     * @param ImageOptions $options
+     * @return $this
+     * @see http://libxlsxwriter.github.io/worksheet_8h.html#a0b05e75e2c2a5c3452374714cdb2b79b
+     */
+    public function insertImageOpt(int $row, int $col, string $path, ImageOptions $options)
+    {
+        FFILibXlsxWriter::ffi()->worksheet_insert_image_opt(
+            $this->cWorksheet,
+            $row,
+            $col,
+            $path,
+            $options->getPointer()
         );
 
         return $this;

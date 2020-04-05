@@ -6,11 +6,10 @@ Example programs using libxlsxwriter:
 * [tutorial1.php](../demos/tutorial1.php) Tutorial 1 from the documentation
 * [tutorial2.php](../demos/tutorial2.php) Tutorial 2 from the documentation
 * [tutorial3.php](../demos/tutorial3.php) Tutorial 3 from the documentation
-* not-ready [format_font.php](../demos/format_font.php) Example of writing data with font formatting
-* not-ready [format_num_format.php](../demos/format_num_format.php) Example of writing data with number formatting
+* [format_font.php](../demos/format_font.php) Example of writing data with font fordsmatting
+* [format_num_format.php](../demos/format_num_format.php) Example of writing data with number formatting
 * [dates_and_times01.php](../demos/dates_and_times01.php) Writing dates and times with numbers
 * [dates_and_times02.php](../demos/dates_and_times02.php) Writing dates and times with datetime
-* [dates_and_times03.php](../demos/dates_and_times03.php) Dates and times with different formats
 * [hyperlinks.php](../demos/hyperlinks.php) A example of writing urls/hyperlinks
 * [rich_strings.php](../demos/rich_strings.php) A example of writing "rich" multi-format strings
 * [array_formula.php](../demos/array_formula.php) A example of using array formulas
@@ -25,6 +24,7 @@ Example programs using libxlsxwriter:
 * not-ready [headers_footers.php](../demos/headers_footers.php) Example of adding worksheet headers/footers
 * not-ready [defined_name.php](../demos/defined_name.php) Example of how to create defined names
 * not-ready [outline.php](../demos/outline.php) Example of grouping and outlines
+* [dates_and_times03.php](../demos/dates_and_times03.php) Dates and times with different formats
 * not-ready [outline_collapsed.php](../demos/outline_collapsed.php) Example of grouping and collapsed outlines
 * not-ready [tab_colors.php](../demos/tab_colors.php) Example of how to set worksheet tab colors
 * not-ready [hide_sheet.php](../demos/hide_sheet.php) Example of hiding a worksheet

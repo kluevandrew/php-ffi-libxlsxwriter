@@ -8,6 +8,11 @@ use FFILibXlsxWriter\FFILibXlsxWriter;
 class CharPointer
 {
     /**
+     * @var string
+     */
+    protected string $string;
+
+    /**
      * @var int
      */
     protected int $size;
@@ -15,7 +20,7 @@ class CharPointer
     /**
      * @var FFI\CData
      */
-    private FFI\CData $pointer;
+    protected FFI\CData $pointer;
 
     /**
      * CharPointer constructor.
@@ -23,6 +28,7 @@ class CharPointer
      */
     public function __construct(string $string)
     {
+        $this->string = $string;
         $this->size = strlen($string);
         $this->byteByByteCopy($string);
     }
@@ -61,5 +67,13 @@ class CharPointer
     public function getPointer(): FFI\CData
     {
         return $this->pointer;
+    }
+
+    /**
+     * @return string
+     */
+    public function getString(): string
+    {
+        return $this->string;
     }
 }

@@ -18,7 +18,7 @@ class FFILibXlsxWriter
         self::$ffi = FFI::cdef(
             self::getHeaders(),
             $libraryPath ?? self::getLibraryPath(),
-        );
+            );
     }
 
     protected static function getHeaders(): string
@@ -57,5 +57,14 @@ class FFILibXlsxWriter
         $lastCol = $ffi->lxw_name_to_col_2($range);
 
         return [$firstRow, $firstCol, $lastRow, $lastCol];
+    }
+
+    public static function cols(string $cols): array
+    {
+        $ffi = self::ffi();
+        $firstCol = $ffi->lxw_name_to_col($cols);
+        $lastCol = $ffi->lxw_name_to_col_2($cols);
+
+        return [$firstCol, $lastCol];
     }
 }
