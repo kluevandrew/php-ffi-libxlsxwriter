@@ -3,7 +3,6 @@
 namespace FFILibXlsxWriter\Structs;
 
 use FFI;
-use FFI\CData;
 use FFILibXlsxWriter\FFILibXlsxWriter;
 
 /**
@@ -15,11 +14,6 @@ use FFILibXlsxWriter\FFILibXlsxWriter;
 class WorkbookOptions extends Struct
 {
     /**
-     * @var CData|null
-     */
-    private ?CData $tmpDirPointer = null;
-
-    /**
      * LXWDateTime constructor.
      * @param bool $constantMemory
      * @param bool $useZip64
@@ -28,27 +22,16 @@ class WorkbookOptions extends Struct
     public function __construct(bool $constantMemory = false, bool $useZip64 = false, string $tmpDir = null)
     {
         $ffi = FFILibXlsxWriter::ffi();
-        $this->struct = $ffi->new('struct lxw_workbook_options');
+        $this->struct = $ffi->new('struct lxw_workbook_options', false, false);
         $this->pointer = FFI::addr($this->struct);
 
-        $this->struct->constant_memory = $constantMemory;
-        $this->struct->use_zip64 = $useZip64;
-        if ($tmpDir) {
-            $this->tmpDirPointer = $ffi->strdup($tmpDir);
-            $this->struct->tmpdir = $this->tmpDirPointer;
-        }
+        $this->constant_memory = $constantMemory;
+        $this->use_zip64 = $useZip64;
+        $this->tmpdir = $tmpDir;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function free(): void
+    protected function getCharPointerProperties(): array
     {
-        if ($this->tmpDirPointer !== null && !FFI::isNull($this->tmpDirPointer)) {
-            FFI::free($this->tmpDirPointer);
-            $this->tmpDirPointer = null;
-        }
-
-        parent::free();
+        return ['tmpdir'];
     }
 }

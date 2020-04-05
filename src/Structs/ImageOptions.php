@@ -24,7 +24,7 @@ class ImageOptions extends Struct
     public function __construct()
     {
         $ffi = FFILibXlsxWriter::ffi();
-        $this->struct = $ffi->new('struct lxw_image_options');
+        $this->struct = $ffi->new('struct lxw_image_options', false, false);
         $this->pointer = FFI::addr($this->struct);
     }
 

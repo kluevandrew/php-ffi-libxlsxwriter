@@ -576,4 +576,19 @@ class Worksheet
 
         return $this;
     }
+
+    /**
+     * @param int $color
+     * @return $this
+     * @see http://libxlsxwriter.github.io/worksheet_8h.html#a1e84ef4dff791fc2278dfb029af94cb0
+     */
+    public function setTabColor(int $color): self
+    {
+        FFILibXlsxWriter::ffi()->worksheet_set_tab_color(
+            $this->cWorksheet,
+            $color
+        );
+
+        return $this;
+    }
 }

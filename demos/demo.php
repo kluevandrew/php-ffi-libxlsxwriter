@@ -28,6 +28,6 @@ $worksheet->writeString(1, 0, "World", $format);
 $worksheet->writeNumber(2, 0, 123);
 $worksheet->writeNumber(3, 0, 123.456);
 /* Insert an image. */
-$worksheet->insertImage(1, 2, __DIR__ . './logo.png'); // ATTENTION: Absolute path only!
+$worksheet->insertImage(1, 2, __DIR__ . '/logo.png'); // ATTENTION: Absolute path only!
 
 $workbook->close();

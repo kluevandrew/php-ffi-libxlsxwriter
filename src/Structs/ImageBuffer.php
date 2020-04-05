@@ -20,7 +20,7 @@ class ImageBuffer extends Struct
     {
         $ffi = FFILibXlsxWriter::ffi();
         $type = \FFI::arrayType(\FFI::type('unsigned char'), [count($buffer)]);
-        $this->struct = $ffi->new($type);
+        $this->struct = $ffi->new($type, false, false);
         foreach ($buffer as $i => $value) {
             $this->struct[$i] = $value;
         }

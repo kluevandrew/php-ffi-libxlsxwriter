@@ -12,6 +12,8 @@ class DemoTest extends TestCase
     public function testAllDemos(string $file): void
     {
         $basename = basename($file, '.php');
+//        echo $basename . PHP_EOL;
+
         $xlsx = __DIR__ . '/../demos/output/' . $basename . '.xlsx';
         if (file_exists($xlsx)) {
             unlink($xlsx);

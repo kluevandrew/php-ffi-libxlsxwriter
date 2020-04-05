@@ -26,7 +26,7 @@ Example programs using libxlsxwriter:
 * not-ready [outline.php](../demos/outline.php) Example of grouping and outlines
 * [dates_and_times03.php](../demos/dates_and_times03.php) Dates and times with different formats
 * not-ready [outline_collapsed.php](../demos/outline_collapsed.php) Example of grouping and collapsed outlines
-* not-ready [tab_colors.php](../demos/tab_colors.php) Example of how to set worksheet tab colors
+* [tab_colors.php](../demos/tab_colors.php) Example of how to set worksheet tab colors
 * not-ready [hide_sheet.php](../demos/hide_sheet.php) Example of hiding a worksheet
 * not-ready [doc_properties.php](../demos/doc_properties.php) Example of setting workbook doc properties
 * not-ready [doc_custom_properties.php](../demos/doc_custom_properties.php) Example of setting custom doc properties

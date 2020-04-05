@@ -26,7 +26,6 @@ $options = new WorkbookOptions(
 $workbook = new Workbook(__DIR__ . '/output/constant_memory.xlsx', $options);
 $worksheet = $workbook->addWorksheet();
 
-
 for ($row = 0; $row < $maxRow; $row++) {
     for ($col = 0; $col < $maxCol; $col++) {
         $worksheet->writeNumber($row, $col, 123.45, null);
