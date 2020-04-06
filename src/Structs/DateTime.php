@@ -2,9 +2,10 @@
 
 namespace FFILibXlsxWriter\Structs;
 
-use DateTime as  PHPDateTime;
+use DateTime as PHPDateTime;
 use FFI;
 use FFILibXlsxWriter\FFILibXlsxWriter;
+use FFILibXlsxWriter\Struct;
 
 /**
  * Class DateTime
@@ -45,5 +46,10 @@ class DateTime extends Struct
         list($y, $m, $d, $h, $i, $s) = explode('|', $dateTime->format('Y|m|d|H|i|s.v'));
 
         return new self($y, $m, $d, $h, $i, $s);
+    }
+
+    public static function now()
+    {
+        return self::fromDateTime(new PHPDateTime());
     }
 }

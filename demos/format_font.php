@@ -2,6 +2,7 @@
 
 /**
  * @see http://libxlsxwriter.github.io/format_font_8c-example.html
+ * @noinspection PhpUnhandledExceptionInspection
  */
 
 use FFILibXlsxWriter\FFILibXlsxWriter;
@@ -16,7 +17,7 @@ $workbook = new Workbook(__DIR__ . '/output/format_font.xlsx');
 /* Add a worksheet. */
 $worksheet = $workbook->addWorksheet();
 /* Widen the first column to make the text clearer. */
-$worksheet->setColumn(0, 0, 20);
+$worksheet->setColumn([0, 0], 20);
 /* Add some formats. */
 $format1 = $workbook->addFormat();
 $format2 = $workbook->addFormat();
@@ -29,8 +30,8 @@ $format2->setItalic();
 $format3->setBold();
 $format3->setItalic();
 /* Write some formatted strings. */
-$worksheet->writeString(0, 0, "This is bold", $format1);
-$worksheet->writeString(1, 0, "This is italic", $format2);
-$worksheet->writeString(2, 0, "Bold and italic", $format3);
+$worksheet->writeString([0, 0], "This is bold", $format1);
+$worksheet->writeString([1, 0], "This is italic", $format2);
+$worksheet->writeString([2, 0], "Bold and italic", $format3);
 /* Close the workbook, save the file and free any memory. */
 $workbook->close();

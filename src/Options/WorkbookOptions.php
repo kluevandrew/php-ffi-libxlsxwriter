@@ -1,9 +1,11 @@
 <?php
 
-namespace FFILibXlsxWriter\Structs;
+namespace FFILibXlsxWriter\Options;
 
 use FFI;
 use FFILibXlsxWriter\FFILibXlsxWriter;
+use FFILibXlsxWriter\Struct;
+use FFILibXlsxWriter\Structs\CharPointer;
 
 /**
  * Class WorkbookOptions

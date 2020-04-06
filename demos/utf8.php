@@ -2,6 +2,7 @@
 
 /**
  * @see http://libxlsxwriter.github.io/utf8_8c-example.html
+ * @noinspection PhpUnhandledExceptionInspection
  */
 
 use FFILibXlsxWriter\FFILibXlsxWriter;
@@ -14,6 +15,6 @@ FFILibXlsxWriter::init();
 $workbook = new Workbook(__DIR__ . '/output/utf8.xlsx');
 $worksheet = $workbook->addWorksheet();
 
-$worksheet->writeString(2, 1, 'Это фраза на русском!', null);
+$worksheet->writeString([2, 1], 'Это фраза на русском!', null);
 
 $workbook->close();

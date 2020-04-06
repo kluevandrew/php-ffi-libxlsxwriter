@@ -2,6 +2,7 @@
 
 /**
  * @see http://libxlsxwriter.github.io/tutorial1_8c-example.html
+ * @noinspection PhpUnhandledExceptionInspection
  */
 
 use FFILibXlsxWriter\FFILibXlsxWriter;
@@ -24,11 +25,11 @@ $expenses = [
 
 /* Iterate over the data and write it out element by element. */
 for ($row = 0; $row < 4; $row++) {
-    $worksheet->writeString($row, $col, $expenses[$row]['item'], null);
-    $worksheet->writeNumber($row, $col + 1, $expenses[$row]['cost'], null);
+    $worksheet->writeString([$row, $col], $expenses[$row]['item'], null);
+    $worksheet->writeNumber([$row, $col + 1], $expenses[$row]['cost'], null);
 }
 /* Write a total using a formula. */
-$worksheet->writeString($row, $col, "Total", null);
-$worksheet->writeFormula($row, $col + 1, "=SUM(B1:B4)", null);
+$worksheet->writeString([$row, $col], "Total", null);
+$worksheet->writeFormula([$row, $col + 1], "=SUM(B1:B4)", null);
 
 $workbook->close();

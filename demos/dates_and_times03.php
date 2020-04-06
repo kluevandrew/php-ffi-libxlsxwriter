@@ -2,10 +2,12 @@
 
 /**
  * @see http://libxlsxwriter.github.io/dates_and_times03_8c-example.html
+ * @noinspection PhpUnhandledExceptionInspection
  */
 
 use FFILibXlsxWriter\FFILibXlsxWriter;
 use FFILibXlsxWriter\Enums\Align;
+use FFILibXlsxWriter\Structs\DateTime as XlsxDateTime;
 use FFILibXlsxWriter\Workbook;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -13,7 +15,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 FFILibXlsxWriter::init();
 
 /* A datetime to display. */
-$datetime = new \FFILibXlsxWriter\Structs\DateTime(2013, 1, 23, 12, 30, 5.123);
+$datetime = new XlsxDateTime(2013, 1, 23, 12, 30, 5.123);
 $row = 0;
 $col = 0;
 $i = 0;
@@ -43,10 +45,10 @@ $worksheet = $workbook->addWorksheet();
 $bold = $workbook->addFormat();
 $bold->setBold();
 /* Write the column headers. */
-$worksheet->writeString($row, $col, "Formatted date", $bold);
-$worksheet->writeString($row, $col + 1, "Format", $bold);
+$worksheet->writeString([$row, $col], "Formatted date", $bold);
+$worksheet->writeString([$row, $col + 1], "Format", $bold);
 /* Widen the first column to make the text clearer. */
-$worksheet->setColumn(0, 1, 20, null);
+$worksheet->setColumn([0, 1], 20, null);
 /* Write the same date and time using each of the above formats. */
 for ($i = 0; $i < 14; $i++) {
     $row++;
@@ -55,8 +57,8 @@ for ($i = 0; $i < 14; $i++) {
     $format->setNumFormat($date_formats[$i]);
     $format->setAlign(Align::LEFT);
     /* Write the datetime with each format. */
-    $worksheet->writeDatetime($row, $col, $datetime, $format);
+    $worksheet->writeDatetime([$row, $col], $datetime, $format);
     /* Also write the format string for comparison. */
-    $worksheet->writeString($row, $col + 1, $date_formats[$i], null);
+    $worksheet->writeString([$row, $col + 1], $date_formats[$i], null);
 }
 $workbook->close();

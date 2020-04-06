@@ -2,84 +2,32 @@
 
 namespace FFILibXlsxWriter\Structs;
 
-use FFI;
-use FFI\CData;
+use FFI\CType;
 use FFILibXlsxWriter\FFILibXlsxWriter;
 
-class RichString extends Struct
+class RichString extends AbstractList
 {
-    /**
-     * @var RichStringPart[]
-     */
-    protected array $parts = [];
-
-    /**
-     * RichString constructor.
-     * @param RichStringPart[] $parts
-     */
-    public function __construct(array $parts)
+    protected function castPart($part)
     {
-        $this->parts = $parts;
+        return is_string($part) ? new RichStringPart($part) : $part;
     }
 
-    /**
-     * @param RichStringPart $part
-     * @return $this
-     */
-    public function push(RichStringPart $part): self
+    protected function getItemType(): CType
     {
-        $this->free();
-        $this->parts[] = $part;
-
-        return $this;
+        return FFILibXlsxWriter::ffi()->type('struct lxw_rich_string_tuple*');
     }
 
-    /**
-     * @return void
-     */
-    private function allocate(): void
+    protected function partToStructItem($part)
     {
-        $ffi = FFILibXlsxWriter::ffi();
-
-        $size = count($this->parts);
-        $this->struct = $ffi->new(
-            FFI::arrayType(
-                $ffi->type('struct lxw_rich_string_tuple*'),
-                [$size + 1]
-            ),
-            false,
-            false
-        );
-
-        foreach ($this->parts as $i => $part) {
-            $this->struct[$i] = $part->getPointer();
+        if (!$part instanceof RichStringPart) {
+            throw new \RuntimeException('invalid part');
         }
 
-        $this->struct[$size] = null;
-        $this->pointer = FFI::addr($this->struct);
+        return $part->getStruct();
     }
 
-    /**
-     * @return CData
-     */
-    public function getPointer(): CData
+    protected function shouldAddNullToEnd(): bool
     {
-        if (null === $this->pointer) {
-            $this->allocate();
-        }
-
-        return $this->pointer;
-    }
-
-    /**
-     * @return CData
-     */
-    public function getStruct(): CData
-    {
-        if (null === $this->struct) {
-            $this->allocate();
-        }
-
-        return $this->struct;
+        return true;
     }
 }

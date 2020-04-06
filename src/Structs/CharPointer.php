@@ -4,6 +4,7 @@ namespace FFILibXlsxWriter\Structs;
 
 use FFI;
 use FFILibXlsxWriter\FFILibXlsxWriter;
+use FFILibXlsxWriter\Struct;
 
 class CharPointer extends Struct
 {
@@ -26,11 +27,6 @@ class CharPointer extends Struct
         $this->string = $string;
         $this->size = strlen($string);
         $this->byteByByteCopy($string);
-    }
-
-    public function __destruct()
-    {
-        $this->free();
     }
 
     private function byteByByteCopy(string $string)

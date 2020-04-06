@@ -2,6 +2,7 @@
 
 /**
  * @see http://libxlsxwriter.github.io/merge_rich_string_8c-example.html
+ * @noinspection PhpUnhandledExceptionInspection
  */
 
 use FFILibXlsxWriter\FFILibXlsxWriter;
@@ -30,18 +31,18 @@ $red->setFontColor(Color::RED);
 $blue = $workbook->addFormat();
 $blue->setFontColor(Color::BLUE);
 /* Create the fragments for the rich string. */
-$rich_string = new RichString([
+$rich_string = new RichString(
     new RichStringPart('This is '),
     new RichStringPart('red', $red),
     new RichStringPart(' and this is '),
     new RichStringPart('blue', $blue),
-]);
+);
 
 /* Write an empty string to the merged range. */
-$worksheet->mergeRange(1, 1, 4, 3, "", $merge_format);
+$worksheet->mergeRange([1, 1, 4, 3], "", $merge_format);
 /* We then overwrite the first merged cell with a rich string. Note that
  * we must also pass the cell format used in the merged cells format at
  * the end. */
-$worksheet->writeRichString(1, 1, $rich_string, $merge_format);
+$worksheet->writeRichString([1, 1], $rich_string, $merge_format);
 
 $workbook->close();

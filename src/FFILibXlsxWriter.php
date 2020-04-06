@@ -7,7 +7,20 @@ use FFI\CData;
 
 class FFILibXlsxWriter
 {
-    protected static FFI $ffi;
+    /**
+     * @var FFI|mixed
+     */
+    protected static ?FFI $ffi = null;
+
+    /**
+     * @var resource
+     */
+    protected static $stderr = null;
+
+    /**
+     * @var string
+     */
+    private static ?string $stderrFile = null;
 
     /**
      * FFILibXlsxWriter constructor.
@@ -15,10 +28,16 @@ class FFILibXlsxWriter
      */
     public static function init(string $libraryPath = null)
     {
+        if (null !== self::$ffi) {
+            return;
+        }
+
         self::$ffi = FFI::cdef(
             self::getHeaders(),
             $libraryPath ?? self::getLibraryPath(),
         );
+
+        self::overloadLogging();
     }
 
     protected static function getHeaders(): string
@@ -39,8 +58,16 @@ class FFILibXlsxWriter
         return self::$ffi;
     }
 
-    public static function cell(string $address): array
+    /**
+     * @param array|string $address
+     * @return array
+     */
+    public static function cell($address): array
     {
+        if (is_array($address)) {
+            return $address;
+        }
+
         $ffi = self::ffi();
         $firstRow = $ffi->lxw_name_to_row($address);
         $firstCol = $ffi->lxw_name_to_col($address);
@@ -48,8 +75,16 @@ class FFILibXlsxWriter
         return [$firstRow, $firstCol];
     }
 
-    public static function range(string $range): array
+    /**
+     * @param array"string $range
+     * @return array
+     */
+    public static function range($range): array
     {
+        if (is_array($range)) {
+            return $range;
+        }
+
         $ffi = self::ffi();
         $firstRow = $ffi->lxw_name_to_row($range);
         $firstCol = $ffi->lxw_name_to_col($range);
@@ -59,12 +94,63 @@ class FFILibXlsxWriter
         return [$firstRow, $firstCol, $lastRow, $lastCol];
     }
 
-    public static function cols(string $cols): array
+    /**
+     * @param array|string $cols
+     * @return array
+     */
+    public static function cols($cols): array
     {
+        if (is_array($cols)) {
+            return $cols;
+        }
+
         $ffi = self::ffi();
         $firstCol = $ffi->lxw_name_to_col($cols);
         $lastCol = $ffi->lxw_name_to_col_2($cols);
 
         return [$firstCol, $lastCol];
+    }
+
+    /**
+     * @param int|string $row
+     * @return int
+     */
+    public static function col($row): int
+    {
+        if (is_int($row)) {
+            return $row;
+        }
+
+        return self::ffi()->lxw_name_to_col($row);
+    }
+
+    /**
+     * @void
+     */
+    private static function overloadLogging()
+    {
+        self::$stderrFile = tempnam(sys_get_temp_dir(), uniqid(__CLASS__, true));
+        self::$ffi->freopen(self::$stderrFile, 'w', self::$ffi->stderr);
+        self::$stderr = fopen(self::$stderrFile, 'r');
+    }
+
+    public static function getLog(): string
+    {
+        $log = [];
+        while (!feof(self::$stderr)) {
+            $log[] = fgets(self::$stderr);
+        }
+
+        return implode(PHP_EOL, $log);
+    }
+
+    public function __destruct()
+    {
+        if (self::$stderr !== null) {
+            fclose(self::$stderr);
+        }
+        if (file_exists(self::$stderrFile)) {
+            unlink(self::$stderrFile);
+        }
     }
 }

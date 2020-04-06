@@ -2,6 +2,7 @@
 
 /**
  * @see http://libxlsxwriter.github.io/tab_colors_8c-example.html
+ * @noinspection PhpUnhandledExceptionInspection
  */
 
 use FFILibXlsxWriter\FFILibXlsxWriter;
@@ -23,6 +24,6 @@ $worksheet1->setTabColor(Color::RED);
 $worksheet2->setTabColor(Color::GREEN);
 $worksheet3->setTabColor(0xFF9900); /* Orange. */
 /* worksheet4 will have the default color. */
-$worksheet4->writeString(0, 0, "Hello");
+$worksheet4->writeString([0, 0], "Hello");
 
 $workbook->close();

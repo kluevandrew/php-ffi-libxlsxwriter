@@ -2,13 +2,13 @@
 
 /**
  * @see http://libxlsxwriter.github.io/image_buffer_8c-example.html
+ * @noinspection PhpUnhandledExceptionInspection
+ * @noinspection DuplicatedCode
  */
 
 use FFILibXlsxWriter\FFILibXlsxWriter;
-use FFILibXlsxWriter\Enums\Color;
 use FFILibXlsxWriter\Structs\ImageBuffer;
-use FFILibXlsxWriter\Structs\ImageOptions;
-use FFILibXlsxWriter\Enums\Underline;
+use FFILibXlsxWriter\Options\ImageOptions;
 use FFILibXlsxWriter\Workbook;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -46,10 +46,8 @@ $options->y_offset = 4;
 $options->x_scale = 2;
 $options->y_scale = 1;
 /* Insert the image from the buffer. */
-list($row, $col) = FFILibXlsxWriter::cell("B3");
-$worksheet->insertImageBuffer($row, $col, $image_buffer, $image_size);
+$worksheet->insertImageBuffer('B3', $image_buffer, $image_size);
 /* Insert the image from the same buffer, with some options. */
-list($row, $col) = FFILibXlsxWriter::cell("B7");
-$worksheet->insertImageBufferOpt($row, $col, $image_buffer, $image_size, $options);
+$worksheet->insertImageBuffer('B7', $image_buffer, $image_size, $options);
 
 $workbook->close();

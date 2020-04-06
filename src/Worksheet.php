@@ -2,20 +2,30 @@
 
 namespace FFILibXlsxWriter;
 
-use FFI\CData;
+use FFILibXlsxWriter\Contracts\Closable;
+use FFILibXlsxWriter\Contracts\DoNotFreeDirectly;
+use FFILibXlsxWriter\Exceptions\FFILibXlsxWriterException;
+use FFILibXlsxWriter\Exceptions\LibWarning;
 use FFILibXlsxWriter\Structs\DataValidation;
 use FFILibXlsxWriter\Structs\ImageBuffer;
-use FFILibXlsxWriter\Structs\ImageOptions;
+use FFILibXlsxWriter\Options\ImageOptions;
+use FFILibXlsxWriter\Structs\IntegerList;
 use FFILibXlsxWriter\Structs\Protection;
 use FFILibXlsxWriter\Structs\RichString;
 use FFILibXlsxWriter\Style\Format;
-use FFILibXlsxWriter\Structs\CommentOptions;
+use FFILibXlsxWriter\Options\CommentOptions;
 use FFILibXlsxWriter\Structs\DateTime;
+use FFILibXlsxWriter\Traits\ClosableStruct;
 
-class Worksheet
+class Worksheet extends Struct implements DoNotFreeDirectly, Closable
 {
+    use ClosableStruct;
+
     protected Workbook $workbook;
-    protected CData $cWorksheet;
+
+    private ?IntegerList $horizontalBreaks = null;
+
+    private ?IntegerList $verticalBreaks = null;
 
     /**
      * Worksheet constructor.
@@ -25,305 +35,317 @@ class Worksheet
     public function __construct(Workbook $workbook, ?string $name)
     {
         $this->workbook = $workbook;
-        $this->cWorksheet = FFILibXlsxWriter::ffi()->workbook_add_worksheet(
-            $this->workbook->getCWorkbook(),
+        $this->pointer = FFILibXlsxWriter::ffi()->workbook_add_worksheet(
+            $this->workbook->getPointer(),
             $name
         );
+        $this->struct = $this->pointer[0];
     }
 
-    /**
-     * @return CData
-     */
-    public function getCWorksheet(): CData
+    protected function free(): void
     {
-        return $this->cWorksheet;
+        $this->pointer = null;
+        $this->struct = null;
+
+        parent::free();
     }
 
     /**
-     * @param int $row
-     * @param int $col
+     * @param int[]|string $cell
      * @param float $number
      * @param Format|null $format
      * @return Worksheet
+     * @throws Exceptions\CallAfterCloseException
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#ad9fc47d3beaa2ab4759414e8580c2289
      */
-    public function writeNumber(int $row, int $col, float $number, Format $format = null): self
+    public function writeNumber($cell, float $number, Format $format = null): self
     {
+        $this->throwIfClosed(__METHOD__);
+        list ($row, $col) = FFILibXlsxWriter::cell($cell);
+
         FFILibXlsxWriter::ffi()->worksheet_write_number(
-            $this->cWorksheet,
+            $this->getPointer(),
             $row,
             $col,
             $number,
-            $format ? $format->getCFormat() : null
+            $format ? $format->getPointer() : null
         );
 
         return $this;
     }
 
     /**
-     * @param int $row
-     * @param int $col
+     * @param int[]|string $cell
      * @param string $string
      * @param Format|null $format
      * @return Worksheet
+     * @throws Exceptions\CallAfterCloseException
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#ac208046e7a6d12cc87982422efa41b31
      */
-    public function writeString(int $row, int $col, string $string, Format $format = null): self
+    public function writeString($cell, string $string, Format $format = null): self
     {
+        $this->throwIfClosed(__METHOD__);
+        list ($row, $col) = FFILibXlsxWriter::cell($cell);
+
         FFILibXlsxWriter::ffi()->worksheet_write_string(
-            $this->cWorksheet,
+            $this->getPointer(),
             $row,
             $col,
             $string,
-            $format ? $format->getCFormat() : null
+            $format ? $format->getPointer() : null
         );
 
         return $this;
     }
 
     /**
-     * @param int $row
-     * @param int $col
+     * @param int[]|string $cell
      * @param string $formula
      * @param Format|null $format
+     * @param float|null $result
      * @return Worksheet
+     * @throws Exceptions\CallAfterCloseException
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#ae57117f04c82bef29805ec3eabc219bb
+     * @see http://libxlsxwriter.github.io/worksheet_8h.html#af474c01f7ec8ac1a01206c9c4a5867af
      */
-    public function writeFormula(int $row, int $col, string $formula, Format $format = null): self
+    public function writeFormula($cell, string $formula, Format $format = null, float $result = null): self
     {
-        FFILibXlsxWriter::ffi()->worksheet_write_formula(
-            $this->cWorksheet,
-            $row,
-            $col,
-            $formula,
-            $format ? $format->getCFormat() : null
-        );
+        $this->throwIfClosed(__METHOD__);
+        list ($row, $col) = FFILibXlsxWriter::cell($cell);
+
+        if (null !== $result) {
+            FFILibXlsxWriter::ffi()->worksheet_write_formula_num(
+                $this->getPointer(),
+                $row,
+                $col,
+                $formula,
+                $format ? $format->getPointer() : null,
+                $result
+            );
+        } else {
+            FFILibXlsxWriter::ffi()->worksheet_write_formula(
+                $this->getPointer(),
+                $row,
+                $col,
+                $formula,
+                $format ? $format->getPointer() : null
+            );
+        }
 
         return $this;
     }
 
     /**
-     * @param int $firstRow
-     * @param int $firstCol
-     * @param int $lastRow
-     * @param int $lastCol
+     * @param int[]|string $range
      * @param string $formula
      * @param Format|null $format
      * @return $this
+     * @throws Exceptions\CallAfterCloseException
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#a8331799b5821d70c442d637ca66dd6e7
      */
-    public function writeArrayFormula(
-        int $firstRow,
-        int $firstCol,
-        int $lastRow,
-        int $lastCol,
-        string $formula,
-        Format $format = null
-    ): self {
+    public function writeArrayFormula($range, string $formula, Format $format = null): self
+    {
+        $this->throwIfClosed(__METHOD__);
+        list(
+            $firstRow,
+            $firstCol,
+            $lastRow,
+            $lastCol,
+        ) = FFILibXlsxWriter::range($range);
+
         FFILibXlsxWriter::ffi()->worksheet_write_array_formula(
-            $this->cWorksheet,
+            $this->getPointer(),
             $firstRow,
             $firstCol,
             $lastRow,
             $lastCol,
             $formula,
-            $format ? $format->getCFormat() : null
+            $format ? $format->getPointer() : null
         );
 
         return $this;
     }
 
     /**
-     * @param int $row
-     * @param int $col
+     * @param int[]|string $cell
      * @param DateTime $dateTime
      * @param Format|null $format
      * @return $this
+     * @throws Exceptions\CallAfterCloseException
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#afb0b3211160927a3412be28c9364b1b5
      */
-    public function writeDatetime(int $row, int $col, DateTime $dateTime, Format $format = null): self
+    public function writeDatetime($cell, DateTime $dateTime, Format $format = null): self
     {
+        $this->throwIfClosed(__METHOD__);
+        list ($row, $col) = FFILibXlsxWriter::cell($cell);
+
         $this->workbook->addStructure($dateTime);
 
         FFILibXlsxWriter::ffi()->worksheet_write_datetime(
-            $this->cWorksheet,
+            $this->getPointer(),
             $row,
             $col,
             $dateTime->getPointer(),
-            $format ? $format->getCFormat() : null
+            $format ? $format->getPointer() : null
         );
 
         return $this;
     }
 
     /**
-     * @param int $row
-     * @param int $col
+     * @param int[]|string $cell
      * @param string $url
      * @param Format|null $format
      * @return $this
+     * @throws Exceptions\CallAfterCloseException
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#a9b2ac96ee23574a432f5703eedcaf9a1
      */
-    public function writeUrl(int $row, int $col, string $url, Format $format = null): self
+    public function writeUrl($cell, string $url, Format $format = null): self
     {
+        $this->throwIfClosed(__METHOD__);
+        list ($row, $col) = FFILibXlsxWriter::cell($cell);
+
         FFILibXlsxWriter::ffi()->worksheet_write_url(
-            $this->cWorksheet,
+            $this->getPointer(),
             $row,
             $col,
             $url,
-            $format ? $format->getCFormat() : null
+            $format ? $format->getPointer() : null
         );
 
         return $this;
     }
 
     /**
-     * @param int $row
-     * @param int $col
+     * @param int[]|string $cell
      * @param bool $value
      * @param Format|null $format
      * @return $this
+     * @throws Exceptions\CallAfterCloseException
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#af14fc7b20ba84e56510caf15c577cf8c
      */
-    public function writeBoolean(int $row, int $col, bool $value, Format $format = null): self
+    public function writeBoolean($cell, bool $value, Format $format = null): self
     {
+        $this->throwIfClosed(__METHOD__);
+        list ($row, $col) = FFILibXlsxWriter::cell($cell);
+
         FFILibXlsxWriter::ffi()->worksheet_write_boolean(
-            $this->cWorksheet,
+            $this->getPointer(),
             $row,
             $col,
             (int)$value,
-            $format ? $format->getCFormat() : null
+            $format ? $format->getPointer() : null
         );
 
         return $this;
     }
 
     /**
-     * @param int $row
-     * @param int $col
-     * @param string $formula
-     * @param Format|null $format
-     * @param float $result
-     * @return $this
-     * @see http://libxlsxwriter.github.io/worksheet_8h.html#af474c01f7ec8ac1a01206c9c4a5867af
-     * @noinspection PhpOptionalBeforeRequiredParametersInspection
-     */
-    public function writeFormulaNum(int $row, int $col, string $formula, Format $format = null, float $result): self
-    {
-        FFILibXlsxWriter::ffi()->worksheet_write_formula_num(
-            $this->cWorksheet,
-            $row,
-            $col,
-            $formula,
-            $format ? $format->getCFormat() : null,
-            $result
-        );
-
-        return $this;
-    }
-
-    /**
-     * @param int $row
-     * @param int $col
+     * @param int[]|string $cell
      * @param mixed $richString
      * @param Format|null $format
      * @return $this
+     * @throws Exceptions\CallAfterCloseException
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#a62bf44845ce9dcc505bf228999db5afa
      */
-    public function writeRichString(
-        int $row,
-        int $col,
-        RichString $richString,
-        Format $format = null
-    ): self {
+    public function writeRichString($cell, RichString $richString, Format $format = null): self
+    {
+        $this->throwIfClosed(__METHOD__);
+        list ($row, $col) = FFILibXlsxWriter::cell($cell);
+
         FFILibXlsxWriter::ffi()->worksheet_write_rich_string(
-            $this->cWorksheet,
+            $this->getPointer(),
             $row,
             $col,
             $richString->getStruct(),
-            $format ? $format->getCFormat() : null
+            $format ? $format->getPointer() : null
         );
 
         return $this;
     }
 
     /**
-     * @param int $row
-     * @param int $col
+     * @param int[]|string $cell
      * @param string $comment
+     * @param CommentOptions|null $options
      * @return $this
+     * @throws Exceptions\CallAfterCloseException
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#abd1728d105365c0113e15f40c6bb1b27
      */
-    public function writeComment(int $row, int $col, string $comment): self
+    public function writeComment($cell, string $comment, CommentOptions $options = null): self
     {
-        FFILibXlsxWriter::ffi()->worksheet_write_comment(
-            $this->cWorksheet,
-            $row,
-            $col,
-            $comment
-        );
+        $this->throwIfClosed(__METHOD__);
+        list ($row, $col) = FFILibXlsxWriter::cell($cell);
+
+        if (null !== $options) {
+            $this->workbook->addStructure($options);
+
+            FFILibXlsxWriter::ffi()->worksheet_write_comment_opt(
+                $this->getPointer(),
+                $row,
+                $col,
+                $comment,
+                $options->getPointer()
+            );
+        } else {
+            FFILibXlsxWriter::ffi()->worksheet_write_comment(
+                $this->getPointer(),
+                $row,
+                $col,
+                $comment
+            );
+        }
+
 
         return $this;
     }
 
     /**
-     * @param int $row
-     * @param int $col
-     * @param string $comment
-     * @param CommentOptions $options
-     * @return $this
-     * @see http://libxlsxwriter.github.io/worksheet_8h.html#a158dadac385cd1007994e5478b7b2aa7
-     */
-    public function writeCommentOpt(int $row, int $col, string $comment, CommentOptions $options): self
-    {
-        $this->workbook->addStructure($options);
-
-        FFILibXlsxWriter::ffi()->worksheet_write_comment_opt(
-            $this->cWorksheet,
-            $row,
-            $col,
-            $comment,
-            $options->getPointer()
-        );
-
-        return $this;
-    }
-
-    /**
-     * @param int $row
-     * @param int $col
+     * @param int[]|string $cell
      * @param Format|null $format
      * @return $this
+     * @throws Exceptions\CallAfterCloseException
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#a8c81b7e398d686a1fe17e76ef4485f34
      */
-    public function writeBlank(int $row, int $col, Format $format = null): self
+    public function writeBlank($cell, Format $format = null): self
     {
+        $this->throwIfClosed(__METHOD__);
+        list ($row, $col) = FFILibXlsxWriter::cell($cell);
+
         FFILibXlsxWriter::ffi()->worksheet_write_blank(
-            $this->cWorksheet,
+            $this->getPointer(),
             $row,
             $col,
-            $format ? $format->getCFormat() : null
+            $format ? $format->getPointer() : null
         );
 
         return $this;
     }
 
     /**
-     * @param int $firstCol
-     * @param int $lastCol
+     * @param int[]|string $cols
      * @param int $width
      * @param Format|null $format
      * @return $this
+     * @throws Exceptions\CallAfterCloseException
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#a9656e4e05d3787eee6b3e4d8e82d9b7f
+     * @see http://libxlsxwriter.github.io/worksheet_8h.html#a52c4c145f684c5b4dcd2ed304d1fe907
+     * @todo options
      */
-    public function setColumn(int $firstCol, int $lastCol, int $width, Format $format = null): self
+    public function setColumn($cols, int $width, Format $format = null): self
     {
+        $this->throwIfClosed(__METHOD__);
+        list(
+            $firstCol,
+            $lastCol,
+        ) = FFILibXlsxWriter::cols($cols);
+
         FFILibXlsxWriter::ffi()->worksheet_set_column(
-            $this->cWorksheet,
+            $this->getPointer(),
             $firstCol,
             $lastCol,
             $width,
-            $format ? $format->getCFormat() : null
+            $format ? $format->getPointer() : null
         );
 
         return $this;
@@ -334,71 +356,68 @@ class Worksheet
      * @param int $height
      * @param Format|null $format
      * @return $this
+     * @throws Exceptions\CallAfterCloseException
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#ab9b7fb95e1bd9b0da70befd0d37a9173
+     * @see http://libxlsxwriter.github.io/worksheet_8h.html#abbc2de45e0aa84341fb10a98778b3807
+     * @todo options
      */
     public function setRow(int $row, int $height, Format $format = null): self
     {
+        $this->throwIfClosed(__METHOD__);
+
         FFILibXlsxWriter::ffi()->worksheet_set_row(
-            $this->cWorksheet,
+            $this->getPointer(),
             $row,
             $height,
-            $format ? $format->getCFormat() : null
+            $format ? $format->getPointer() : null
         );
 
         return $this;
     }
 
     /**
-     * @param int $firstRow
-     * @param int $firstCol
-     * @param int $lastRow
-     * @param int $lastCol
+     * @param int[]|string $range
      * @param string $string
      * @param Format|null $format
      * @return $this
+     * @throws Exceptions\CallAfterCloseException
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#ad5a2a09ec65c0f286b756235c7327225
      */
-    public function mergeRange(
-        int $firstRow,
-        int $firstCol,
-        int $lastRow,
-        int $lastCol,
-        string $string,
-        Format $format = null
-    ): self {
+    public function mergeRange($range, string $string, Format $format = null): self
+    {
+        $this->throwIfClosed(__METHOD__);
+
+        list($firstRow,
+            $firstCol,
+            $lastRow,
+            $lastCol) = FFILibXlsxWriter::range($range);
+
         FFILibXlsxWriter::ffi()->worksheet_merge_range(
-            $this->cWorksheet,
+            $this->getPointer(),
             $firstRow,
             $firstCol,
             $lastRow,
             $lastCol,
             $string,
-            $format ? $format->getCFormat() : null
+            $format ? $format->getPointer() : null
         );
 
         return $this;
     }
 
     /**
-     * @param int $firstRow
-     * @param int $firstCol
-     * @param int $lastRow
-     * @param int $lastCol
+     * @param int[]|string $range
      * @return $this
+     * @throws Exceptions\CallAfterCloseException
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#a4e2b1de34e96331000a996f512aecfcf
      */
-    public function autofilter(
-        int $firstRow,
-        int $firstCol,
-        int $lastRow,
-        int $lastCol
-    ): self {
+    public function autofilter($range): self
+    {
+        $this->throwIfClosed(__METHOD__);
+
         FFILibXlsxWriter::ffi()->worksheet_autofilter(
-            $this->cWorksheet,
-            $firstRow,
-            $firstCol,
-            $lastRow,
-            $lastCol
+            $this->getPointer(),
+            ...FFILibXlsxWriter::range($range)
         );
 
         return $this;
@@ -408,14 +427,17 @@ class Worksheet
      * @param string $password
      * @param Protection|null $options
      * @return $this
+     * @throws Exceptions\CallAfterCloseException
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#a1b49e135d4debcdb25941f2f40f04cb0
      */
     public function protect(
         string $password = null,
         Protection $options = null
     ): self {
+        $this->throwIfClosed(__METHOD__);
+
         FFILibXlsxWriter::ffi()->worksheet_protect(
-            $this->cWorksheet,
+            $this->getPointer(),
             $password,
             $options ? $options->getPointer() : null
         );
@@ -424,15 +446,18 @@ class Worksheet
     }
 
     /**
-     * @param int $row
-     * @param int $col
+     * @param int[]|string $cell
      * @return $this
+     * @throws Exceptions\CallAfterCloseException
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#a7e52f1eecb20fe4f9e6223bcf195103b
      */
-    public function freezePanes(int $row, int $col): self
+    public function freezePanes($cell): self
     {
+        $this->throwIfClosed(__METHOD__);
+        list ($row, $col) = FFILibXlsxWriter::cell($cell);
+
         FFILibXlsxWriter::ffi()->worksheet_freeze_panes(
-            $this->cWorksheet,
+            $this->getPointer(),
             $row,
             $col
         );
@@ -441,25 +466,18 @@ class Worksheet
     }
 
     /**
-     * @param int $firstRow
-     * @param int $firstCol
-     * @param int $lastRow
-     * @param int $lastCol
+     * @param int[]|string $range
      * @return $this
+     * @throws Exceptions\CallAfterCloseException
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#a62368aa313184d72a9ca2b1cf5de9a8a
      */
-    public function setSelection(
-        int $firstRow,
-        int $firstCol,
-        int $lastRow,
-        int $lastCol
-    ): self {
+    public function setSelection($range): self
+    {
+        $this->throwIfClosed(__METHOD__);
+
         FFILibXlsxWriter::ffi()->worksheet_set_selection(
-            $this->cWorksheet,
-            $firstRow,
-            $firstCol,
-            $lastRow,
-            $lastCol
+            $this->getPointer(),
+            ...FFILibXlsxWriter::range($range)
         );
 
         return $this;
@@ -469,12 +487,15 @@ class Worksheet
      * @param float $vertical
      * @param float $horizontal
      * @return $this
+     * @throws Exceptions\CallAfterCloseException
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#a9f4a3845529bcc2922b89bdb450ded32
      */
     public function splitPanes(float $vertical, float $horizontal): self
     {
+        $this->throwIfClosed(__METHOD__);
+
         FFILibXlsxWriter::ffi()->worksheet_split_panes(
-            $this->cWorksheet,
+            $this->getPointer(),
             $vertical,
             $horizontal
         );
@@ -483,97 +504,82 @@ class Worksheet
     }
 
     /**
-     * @param int $row
-     * @param int $col
+     * @param int[]|string $cell
      * @param string $path
+     * @param ImageOptions|null $options
      * @return $this
+     * @throws Exceptions\CallAfterCloseException
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#a4529d77bcefcf478b8209f46fe730f6f
-     */
-    public function insertImage(int $row, int $col, string $path): self
-    {
-        FFILibXlsxWriter::ffi()->worksheet_insert_image(
-            $this->cWorksheet,
-            $row,
-            $col,
-            $path
-        );
-
-        return $this;
-    }
-
-    /**
-     * @param int $row
-     * @param int $col
-     * @param string $path
-     * @param ImageOptions $options
-     * @return $this
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#a0b05e75e2c2a5c3452374714cdb2b79b
      */
-    public function insertImageOpt(int $row, int $col, string $path, ImageOptions $options): self
+    public function insertImage($cell, string $path, ImageOptions $options = null): self
     {
-        $this->workbook->addStructure($options);
+        $this->throwIfClosed(__METHOD__);
+        list ($row, $col) = FFILibXlsxWriter::cell($cell);
 
-        FFILibXlsxWriter::ffi()->worksheet_insert_image_opt(
-            $this->cWorksheet,
-            $row,
-            $col,
-            $path,
-            $options->getPointer()
-        );
+        if (null !== $options) {
+            $this->workbook->addStructure($options);
+
+            FFILibXlsxWriter::ffi()->worksheet_insert_image_opt(
+                $this->getPointer(),
+                $row,
+                $col,
+                $path,
+                $options->getPointer()
+            );
+        } else {
+            FFILibXlsxWriter::ffi()->worksheet_insert_image(
+                $this->getPointer(),
+                $row,
+                $col,
+                $path
+            );
+        }
 
         return $this;
     }
 
     /**
-     * @param int $row
-     * @param int $col
+     * @param int[]|string $cell
      * @param ImageBuffer $imageBuffer
      * @param int $imageSize
+     * @param ImageOptions|null $options
      * @return $this
+     * @throws Exceptions\CallAfterCloseException
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#aebd5cc71a42ab0e4a9ce45fe9a6f6908
-     */
-    public function insertImageBuffer(int $row, int $col, ImageBuffer $imageBuffer, int $imageSize): self
-    {
-        $this->workbook->addStructure($imageBuffer);
-
-        FFILibXlsxWriter::ffi()->worksheet_insert_image_buffer(
-            $this->cWorksheet,
-            $row,
-            $col,
-            $imageBuffer->getStruct(),
-            $imageSize
-        );
-
-        return $this;
-    }
-
-    /**
-     * @param int $row
-     * @param int $col
-     * @param ImageBuffer $imageBuffer
-     * @param int $imageSize
-     * @param ImageOptions $options
-     * @return $this
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#af4c868a5cf0eaab8740c1f966ba5561c
      */
-    public function insertImageBufferOpt(
-        int $row,
-        int $col,
+    public function insertImageBuffer(
+        $cell,
         ImageBuffer $imageBuffer,
         int $imageSize,
-        ImageOptions $options
+        ImageOptions $options = null
     ): self {
-        $this->workbook->addStructure($imageBuffer);
-        $this->workbook->addStructure($options);
+        $this->throwIfClosed(__METHOD__);
+        list ($row, $col) = FFILibXlsxWriter::cell($cell);
 
-        FFILibXlsxWriter::ffi()->worksheet_insert_image_buffer_opt(
-            $this->cWorksheet,
-            $row,
-            $col,
-            $imageBuffer->getStruct(),
-            $imageSize,
-            $options->getPointer()
-        );
+        $this->workbook->addStructure($imageBuffer);
+
+        if (null !== $options) {
+            $this->workbook->addStructure($options);
+
+            FFILibXlsxWriter::ffi()->worksheet_insert_image_buffer_opt(
+                $this->getPointer(),
+                $row,
+                $col,
+                $imageBuffer->getStruct(),
+                $imageSize,
+                $options->getPointer()
+            );
+        } else {
+            FFILibXlsxWriter::ffi()->worksheet_insert_image_buffer(
+                $this->getPointer(),
+                $row,
+                $col,
+                $imageBuffer->getStruct(),
+                $imageSize
+            );
+        }
 
         return $this;
     }
@@ -581,12 +587,15 @@ class Worksheet
     /**
      * @param int $color
      * @return $this
+     * @throws Exceptions\CallAfterCloseException
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#a1e84ef4dff791fc2278dfb029af94cb0
      */
     public function setTabColor(int $color): self
     {
+        $this->throwIfClosed(__METHOD__);
+
         FFILibXlsxWriter::ffi()->worksheet_set_tab_color(
-            $this->cWorksheet,
+            $this->getPointer(),
             $color
         );
 
@@ -594,21 +603,122 @@ class Worksheet
     }
 
     /**
-     * @param int $row
-     * @param int $col
+     * @param int[]|string $cell
      * @param DataValidation $dataValidation
      * @return $this
+     * @throws Exceptions\CallAfterCloseException
+     * @throws FFILibXlsxWriterException
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#a70c4b9cfb27b18258117545ac6ce6da0
      */
-    public function dataValidationCell(int $row, int $col, DataValidation $dataValidation): self
+    public function dataValidationCell($cell, DataValidation $dataValidation): self
     {
+        $this->throwIfClosed(__METHOD__);
+        list ($row, $col) = FFILibXlsxWriter::cell($cell);
+
         $this->workbook->addStructure($dataValidation);
 
-        FFILibXlsxWriter::ffi()->worksheet_data_validation_cell(
-            $this->cWorksheet,
+        $result = FFILibXlsxWriter::ffi()->worksheet_data_validation_cell(
+            $this->getPointer(),
             $row,
             $col,
             $dataValidation->getPointer()
+        );
+
+        if ($result !== 0) {
+            throw FFILibXlsxWriterException::byCode(
+                FFILibXlsxWriter::getLog(),
+                $result
+            );
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $header
+     * @return $this
+     * @throws Exceptions\CallAfterCloseException
+     * @see http://libxlsxwriter.github.io/worksheet_8h.html#a4070c24ed5107f33e94f30a1bf865ba9
+     */
+    public function setHeader(string $header): self
+    {
+        $this->throwIfClosed(__METHOD__);
+
+        FFILibXlsxWriter::ffi()->worksheet_set_header(
+            $this->getPointer(),
+            $header
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param string $footer
+     * @return $this
+     * @throws Exceptions\CallAfterCloseException
+     * @see http://libxlsxwriter.github.io/worksheet_8h.html#a57eb561cf3ab5e408a6612f0e379903a
+     */
+    public function setFooter(string $footer): self
+    {
+        $this->throwIfClosed(__METHOD__);
+
+        FFILibXlsxWriter::ffi()->worksheet_set_footer(
+            $this->getPointer(),
+            $footer
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param array $breaks
+     * @return $this
+     * @throws Exceptions\CallAfterCloseException
+     * @see http://libxlsxwriter.github.io/worksheet_8h.html#a9601745a2e9e7b1e194b7f5283f197f0
+     */
+    public function setHorizontalBreaks(array $breaks): self
+    {
+        $this->throwIfClosed(__METHOD__);
+
+        if (null !== $this->horizontalBreaks) {
+            $this->horizontalBreaks->free();
+            $this->horizontalBreaks = null;
+        }
+
+        if (!empty($breaks)) {
+            $this->horizontalBreaks = new IntegerList('uint32_t', ...$breaks);
+        }
+
+        FFILibXlsxWriter::ffi()->worksheet_set_h_pagebreaks(
+            $this->getPointer(),
+            $this->horizontalBreaks !== null ? $this->horizontalBreaks->getStruct() : null
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param array $breaks
+     * @return $this
+     * @throws Exceptions\CallAfterCloseException
+     * @see http://libxlsxwriter.github.io/worksheet_8h.html#a00621cf25b5a449a92bb9b3fc83327e6
+     */
+    public function setVerticalBreaks(array $breaks): self
+    {
+        $this->throwIfClosed(__METHOD__);
+
+        if (null !== $this->horizontalBreaks) {
+            $this->verticalBreaks->free();
+            $this->verticalBreaks = null;
+        }
+
+        if (!empty($breaks)) {
+            $this->verticalBreaks = new IntegerList('uint16_t', ...$breaks);
+        }
+
+        FFILibXlsxWriter::ffi()->worksheet_set_v_pagebreaks(
+            $this->getPointer(),
+            $this->verticalBreaks !== null ? $this->verticalBreaks->getStruct() : null
         );
 
         return $this;

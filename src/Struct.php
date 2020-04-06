@@ -1,9 +1,10 @@
 <?php
 
-namespace FFILibXlsxWriter\Structs;
+namespace FFILibXlsxWriter;
 
 use FFI;
 use FFI\CData;
+use FFILibXlsxWriter\Contracts\DoNotFreeDirectly;
 
 abstract class Struct
 {
@@ -27,12 +28,20 @@ abstract class Struct
         $this->free();
     }
 
-    public function free(): void
+    protected function canBeFree(): bool
     {
-        if (null !== $this->pointer && !FFI::isNull($this->pointer)) {
+        return $this->pointer !== null
+            && !$this instanceof DoNotFreeDirectly
+            && !FFI::isNull($this->pointer);
+    }
+
+    protected function free(): void
+    {
+        if ($this->canBeFree()) {
             FFI::free($this->pointer);
-            $this->pointer = null;
         }
+
+        $this->pointer = null;
         $this->struct = null;
 
         /** @var Struct $structure */
@@ -47,7 +56,7 @@ abstract class Struct
         return $this->pointer;
     }
 
-    public function getStruct(): CData
+    public function getStruct(): ?CData
     {
         return $this->struct;
     }
@@ -159,5 +168,24 @@ abstract class Struct
 
         $this->structures[$name] = $value;
         $this->struct->{$name} = $pointer ? $value->getPointer() : $value->getStruct();
+    }
+
+    /**
+     * @param Struct $struct
+     * @return Struct
+     */
+    protected function addStructure(Struct $struct): Struct
+    {
+        $this->structures[] = $struct;
+
+        return $struct;
+    }
+
+    /**
+     * @return Struct[]
+     */
+    public function getStructures(): array
+    {
+        return $this->structures;
     }
 }

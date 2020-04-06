@@ -4,6 +4,7 @@ namespace FFILibXlsxWriter\Structs;
 
 use FFI;
 use FFILibXlsxWriter\FFILibXlsxWriter;
+use FFILibXlsxWriter\Struct;
 
 /**
  * Class Protection

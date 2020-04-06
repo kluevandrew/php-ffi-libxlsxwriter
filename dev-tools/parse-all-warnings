@@ -1,0 +1,39 @@
+#!/usr/bin/env php
+<?php
+
+$files = glob($argv[1] . '/*.c');
+
+$warnings = [];
+foreach ($files as $file) {
+    $code = file_get_contents($file);
+
+    preg_match_all('/LXW_WARN(_FORMAT1|_FORMAT2)?\(((.|\n)*?)\)\;/im', $code, $matches);
+    if (count($matches[2]) > 0) {
+        $warnings[basename($file)] = [];
+    }
+    foreach ($matches[2] as $i => $match) {
+        $match = str_replace([PHP_EOL, '"'], [' ', ""], $match);
+        $match = preg_replace('/\s+/', ' ', $match);
+
+        if ($matches[1][$i] === '_FORMAT1') {
+            $match = preg_replace('/(.*)\, .*+/', '$1', $match);
+        }
+
+        if ($matches[1][$i] === '_FORMAT2') {
+            $match = preg_replace('/(.*)\,.*\,.*+/', '$1', $match);
+        }
+
+        if (strpos($match, '%') !== false) {
+            $match = str_replace(['%d', '%s'], ['(\d+)', '(\s+)'], preg_quote($match, '/'));
+            $match = '/' . $match . '/i';
+        }
+
+        $warnings[basename($file)][] = $match;
+    }
+}
+
+foreach ($warnings as $file) {
+    echo '------- ', $file, ' -------', PHP_EOL;
+    echo implode(PHP_EOL, $file);
+    echo PHP_EOL;
+}

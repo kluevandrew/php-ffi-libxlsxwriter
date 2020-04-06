@@ -3,7 +3,9 @@
 namespace FFILibXlsxWriter\Structs;
 
 use FFI;
+use FFILibXlsxWriter\Enums\ValidationCriteria;
 use FFILibXlsxWriter\FFILibXlsxWriter;
+use FFILibXlsxWriter\Struct;
 
 /**
  * Class DataValidation
@@ -33,12 +35,15 @@ class DataValidation extends Struct
 {
     /**
      * DataValidation constructor.
+     * @param int $criteria ValidationCriteria::*
      */
-    public function __construct()
+    public function __construct(int $criteria = ValidationCriteria::NONE)
     {
         $ffi = FFILibXlsxWriter::ffi();
         $this->struct = $ffi->new('struct lxw_data_validation', false, false);
         $this->pointer = FFI::addr($this->struct);
+
+        $this->criteria = $criteria;
     }
 
     protected function getStructuralProperties(): array

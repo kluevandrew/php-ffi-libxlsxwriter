@@ -2,19 +2,18 @@
 
 namespace FFILibXlsxWriter;
 
-use FFI\CData;
-use FFILibXlsxWriter\Structs\WorkbookOptions;
+use FFILibXlsxWriter\Contracts\Closable;
+use FFILibXlsxWriter\Contracts\DoNotFreeDirectly;
+use FFILibXlsxWriter\Exceptions\CallAfterCloseException;
+use FFILibXlsxWriter\Options\WorkbookOptions;
 use FFILibXlsxWriter\Style\Format;
-use FFILibXlsxWriter\Structs\Struct;
+use FFILibXlsxWriter\Traits\ClosableStruct;
 
-class Workbook
+class Workbook extends Struct implements DoNotFreeDirectly, Closable
 {
-    private CData $cWorkbook;
-
-    /**
-     * @var Struct[]
-     */
-    protected array $internalStructs = [];
+    use ClosableStruct {
+        ClosableStruct::close as private traitClose;
+    }
 
     /**
      * @var Format|null
@@ -24,7 +23,7 @@ class Workbook
     /**
      * @var bool
      */
-    protected bool $isClosed = false;
+    protected bool $closed = false;
 
     /**
      * Workbook constructor.
@@ -34,80 +33,63 @@ class Workbook
     public function __construct(string $path, WorkbookOptions $options = null)
     {
         if (null !== $options) {
-            $this->cWorkbook = FFILibXlsxWriter::ffi()->workbook_new_opt($path, $options->getPointer());
+            $this->pointer = FFILibXlsxWriter::ffi()->workbook_new_opt($path, $options->getPointer());
         } else {
-            $this->cWorkbook = FFILibXlsxWriter::ffi()->workbook_new($path);
+            $this->pointer = FFILibXlsxWriter::ffi()->workbook_new($path);
         }
-    }
-
-    /**
-     * @return CData
-     */
-    public function getCWorkbook(): CData
-    {
-        return $this->cWorkbook;
+        $this->struct = $this->pointer[0];
     }
 
     /**
      * @param string|null $name
      * @return Worksheet
+     * @throws CallAfterCloseException
      */
     public function addWorksheet(string $name = null): Worksheet
     {
-        return new Worksheet($this, $name);
+        $this->throwIfClosed(__METHOD__);
+
+        $worksheet = new Worksheet($this, $name);
+
+        $this->addStructure($worksheet);
+
+        return $worksheet;
     }
 
     /**
      * @return Format
+     * @throws CallAfterCloseException
      */
     public function addFormat(): Format
     {
-        return new Format($this);
-    }
+        $this->throwIfClosed(__METHOD__);
 
-    /**
-     * Save file
-     */
-    public function close(): void
-    {
-        if ($this->isClosed) {
-            throw new \RuntimeException('Already closed');
-        }
-        $this->isClosed = true;
+        $format = new Format($this);
 
-        FFILibXlsxWriter::ffi()->workbook_close($this->cWorkbook);
-        $this->free();
-    }
+        $this->addStructure($format);
 
-    /**
-     * Clean memory
-     */
-    protected function free(): void
-    {
-        foreach ($this->internalStructs as $struct) {
-            $struct->free();
-        }
-    }
-
-    /**
-     * @internal
-     * @param Struct $struct
-     */
-    public function addStructure(Struct $struct)
-    {
-        $this->internalStructs[] = $struct;
+        return $format;
     }
 
     /**
      * @return Format
+     * @throws CallAfterCloseException
      */
     public function getDefaultUrlFormat(): Format
     {
+        $this->throwIfClosed(__METHOD__);
+
         if (null === $this->defaultUrlFormat) {
-            $cFormat = FFILibXlsxWriter::ffi()->workbook_get_default_url_format($this->cWorkbook);
-            $this->defaultUrlFormat = new Format($this, $cFormat);
+            $pointer = FFILibXlsxWriter::ffi()->workbook_get_default_url_format($this->getPointer());
+            $this->defaultUrlFormat = new Format($this, $pointer);
         }
 
         return $this->defaultUrlFormat;
+    }
+
+    public function close(): void
+    {
+        FFILibXlsxWriter::ffi()->workbook_close($this->getPointer());
+        $this->traitClose();
     }
 }

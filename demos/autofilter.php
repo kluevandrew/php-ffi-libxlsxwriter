@@ -2,6 +2,7 @@
 
 /**
  * @see http://libxlsxwriter.github.io/autofilter_8c-example.html
+ * @noinspection PhpUnhandledExceptionInspection
  */
 
 use FFILibXlsxWriter\FFILibXlsxWriter;
@@ -68,19 +69,19 @@ $data = [
 ];
 
 /* Write the column headers. */
-$worksheet->writeString(0, 0, "Region");
-$worksheet->writeString(0, 1, "Item");
-$worksheet->writeString(0, 2, "Volume");
-$worksheet->writeString(0, 3, "Month");
+$worksheet->writeString([0, 0], "Region");
+$worksheet->writeString([0, 1], "Item");
+$worksheet->writeString([0, 2], "Volume");
+$worksheet->writeString([0, 3], "Month");
 /* Write the row data. */
 for ($i = 0; $i < count($data); $i++) {
-    $worksheet->writeString($i + 1, 0, $data[$i][0]);
-    $worksheet->writeString($i + 1, 1, $data[$i][1]);
-    $worksheet->writeNumber($i + 1, 2, $data[$i][2]);
-    $worksheet->writeString($i + 1, 3, $data[$i][3]);
+    $worksheet->writeString([$i + 1, 0], $data[$i][0]);
+    $worksheet->writeString([$i + 1, 1], $data[$i][1]);
+    $worksheet->writeNumber([$i + 1, 2], $data[$i][2]);
+    $worksheet->writeString([$i + 1, 3], $data[$i][3]);
 }
 /* Add the autofilter. */
-$worksheet->autofilter(0, 0, 50, 3);
+$worksheet->autofilter([0, 0, 50, 3]);
 
 
 $workbook->close();

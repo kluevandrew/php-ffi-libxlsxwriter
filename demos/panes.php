@@ -2,6 +2,7 @@
 
 /**
  * @see http://libxlsxwriter.github.io/panes_8c-example.html
+ * @noinspection PhpUnhandledExceptionInspection
  */
 
 use FFILibXlsxWriter\FFILibXlsxWriter;
@@ -34,51 +35,51 @@ $center->setAlign(Align::CENTER);
 /*
  * Example 1. Freeze pane on the top row.
  */
-$worksheet1->freezePanes(1, 0);
+$worksheet1->freezePanes([1, 0]);
 /* Some sheet formatting. */
-$worksheet1->setColumn(0, 8, 16, null);
+$worksheet1->setColumn([0, 8], 16, null);
 $worksheet1->setRow(0, 20, null);
-$worksheet1->setSelection(4, 3, 4, 3);
+$worksheet1->setSelection([4, 3, 4, 3]);
 /* Some worksheet text to demonstrate scrolling. */
 for ($col = 0; $col < 9; $col++) {
-    $worksheet1->writeString(0, $col, "Scroll down", $header);
+    $worksheet1->writeString([0, $col], "Scroll down", $header);
 }
 for ($row = 1; $row < 100; $row++) {
     for ($col = 0; $col < 9; $col++) {
-        $worksheet1->writeNumber($row, $col, $row + 1, $center);
+        $worksheet1->writeNumber([$row, $col], $row + 1, $center);
     }
 }
 /*
  * Example 2. Freeze pane on the left column.
  */
-$worksheet2->freezePanes(0, 1);
+$worksheet2->freezePanes([0, 1]);
 /* Some sheet formatting. */
-$worksheet2->setColumn(0, 0, 16, null);
-$worksheet2->setSelection(4, 3, 4, 3);
+$worksheet2->setColumn([0, 0], 16, null);
+$worksheet2->setSelection([4, 3, 4, 3]);
 /* Some worksheet text to demonstrate scrolling. */
 for ($row = 0; $row < 50; $row++) {
-    $worksheet2->writeString($row, 0, "Scroll right", $header);
+    $worksheet2->writeString([$row, 0], "Scroll right", $header);
     for ($col = 1; $col < 26; $col++) {
-        $worksheet2->writeNumber($row, $col, $col, $center);
+        $worksheet2->writeNumber([$row, $col], $col, $center);
     }
 }
 /*
  * Example 3. Freeze pane on the top row and left column.
  */
-$worksheet3->freezePanes(1, 1);
+$worksheet3->freezePanes([1, 1]);
 /* Some sheet formatting. */
-$worksheet3->setColumn(0, 25, 16, null);
+$worksheet3->setColumn([0, 25], 16, null);
 $worksheet3->setRow(0, 20, null);
-$worksheet3->writeString(0, 0, "", $header);
-$worksheet3->setSelection(4, 3, 4, 3);
+$worksheet3->writeString([0, 0], "", $header);
+$worksheet3->setSelection([4, 3, 4, 3]);
 /* Some worksheet text to demonstrate scrolling. */
 for ($col = 1; $col < 26; $col++) {
-    $worksheet3->writeString(0, $col, "Scroll down", $header);
+    $worksheet3->writeString([0, $col], "Scroll down", $header);
 }
 for ($row = 1; $row < 50; $row++) {
-    $worksheet3->writeString($row, 0, "Scroll right", $header);
+    $worksheet3->writeString([$row, 0], "Scroll right", $header);
     for ($col = 1; $col < 26; $col++) {
-        $worksheet3->writeNumber($row, $col, $col, $center);
+        $worksheet3->writeNumber([$row, $col], $col, $center);
     }
 }
 /*
@@ -91,12 +92,12 @@ $worksheet4->splitPanes(15, 8.43);
 /* Some sheet formatting. */
 /* Some worksheet text to demonstrate scrolling. */
 for ($col = 1; $col < 26; $col++) {
-    $worksheet4->writeString(0, $col, "Scroll", $center);
+    $worksheet4->writeString([0, $col], "Scroll", $center);
 }
 for ($row = 1; $row < 50; $row++) {
-    $worksheet4->writeString($row, 0, "Scroll", $center);
+    $worksheet4->writeString([$row, 0], "Scroll", $center);
     for ($col = 1; $col < 26; $col++) {
-        $worksheet4->writeNumber($row, $col, $col, $center);
+        $worksheet4->writeNumber([$row, $col], $col, $center);
     }
 }
 

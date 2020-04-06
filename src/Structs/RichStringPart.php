@@ -5,6 +5,7 @@ namespace FFILibXlsxWriter\Structs;
 use FFI;
 use FFI\CData;
 use FFILibXlsxWriter\FFILibXlsxWriter;
+use FFILibXlsxWriter\Struct;
 use FFILibXlsxWriter\Style\Format;
 
 /**
@@ -36,13 +37,13 @@ class RichStringPart extends Struct
         $this->pointer = FFI::addr($this->struct);
 
         $this->string = $string;
-        $this->format = $format ? $format->getCFormat() : null;
+        $this->format = $format ? $format->getPointer() : null;
     }
 
     public function setFormatAttribute(?Format $format): void
     {
-        $this->phpFormat = $format ? $format->getCFormat() : null;
-        $this->struct->format = $format ? $format->getCFormat() : null;
+        $this->phpFormat = $format ? $format->getPointer() : null;
+        $this->struct->format = $format ? $format->getPointer() : null;
     }
 
     public function getFormatAttribute(): ?Format

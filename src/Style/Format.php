@@ -3,37 +3,48 @@
 namespace FFILibXlsxWriter\Style;
 
 use FFI\CData;
+use FFILibXlsxWriter\Contracts\DoNotFreeDirectly;
 use FFILibXlsxWriter\FFILibXlsxWriter;
+use FFILibXlsxWriter\Struct;
 use FFILibXlsxWriter\Workbook;
 
 /**
  * Class Format
  */
-class Format
+class Format extends Struct implements DoNotFreeDirectly
 {
     /**
      * @var Workbook
      */
     private Workbook $workbook;
-    private CData $cFormat;
 
     /**
      * Format constructor.
      * @param Workbook $workbook
-     * @param CData|null $cFormat
+     * @param CData|null $pointer
      */
-    public function __construct(Workbook $workbook, CData $cFormat = null)
+    public function __construct(Workbook $workbook, CData $pointer = null)
     {
         $this->workbook = $workbook;
-        $this->cFormat = $cFormat ?? FFILibXlsxWriter::ffi()->workbook_add_format($this->workbook->getCWorkbook());
+        $this->pointer = $pointer ?? FFILibXlsxWriter::ffi()->workbook_add_format($this->workbook->getPointer());
+        $this->struct = $this->pointer[0];
+    }
+
+    public function free(): void
+    {
+        $this->pointer = null;
+        $this->struct = null;
+
+        parent::free();
     }
 
     /**
      * @return CData
+     * @deprecated
      */
     public function getCFormat(): CData
     {
-        return $this->cFormat;
+        return $this->getPointer();
     }
 
     /**
@@ -43,7 +54,7 @@ class Format
      */
     public function setBold(): self
     {
-        FFILibXlsxWriter::ffi()->format_set_bold($this->cFormat);
+        FFILibXlsxWriter::ffi()->format_set_bold($this->getPointer());
 
         return $this;
     }
@@ -56,50 +67,49 @@ class Format
      */
     public function setNumFormat(string $numFormat): self
     {
-        FFILibXlsxWriter::ffi()->format_set_num_format($this->cFormat, $numFormat);
+        FFILibXlsxWriter::ffi()->format_set_num_format($this->getPointer(), $numFormat);
 
         return $this;
     }
 
     public function setItalic(): self
     {
-        FFILibXlsxWriter::ffi()->format_set_italic($this->cFormat);
+        FFILibXlsxWriter::ffi()->format_set_italic($this->getPointer());
 
         return $this;
     }
 
     public function setFontColor(int $color): self
     {
-        FFILibXlsxWriter::ffi()->format_set_font_color($this->cFormat, $color);
-
+        FFILibXlsxWriter::ffi()->format_set_font_color($this->getPointer(), $color);
 
         return $this;
     }
 
     public function setAlign(int $align): self
     {
-        FFILibXlsxWriter::ffi()->format_set_align($this->cFormat, $align);
+        FFILibXlsxWriter::ffi()->format_set_align($this->getPointer(), $align);
 
         return $this;
     }
 
     public function setFontScript(int $fontScript): self
     {
-        FFILibXlsxWriter::ffi()->format_set_font_script($this->cFormat, $fontScript);
+        FFILibXlsxWriter::ffi()->format_set_font_script($this->getPointer(), $fontScript);
 
         return $this;
     }
 
     public function setUnderline(int $underline): self
     {
-        FFILibXlsxWriter::ffi()->format_set_underline($this->cFormat, $underline);
+        FFILibXlsxWriter::ffi()->format_set_underline($this->getPointer(), $underline);
 
         return $this;
     }
 
     public function setBgColor(int $color): self
     {
-        FFILibXlsxWriter::ffi()->format_set_bg_color($this->cFormat, $color);
+        FFILibXlsxWriter::ffi()->format_set_bg_color($this->getPointer(), $color);
 
         return $this;
     }
@@ -110,28 +120,28 @@ class Format
      */
     public function setFgColor(int $color): self
     {
-        FFILibXlsxWriter::ffi()->format_set_fg_color($this->cFormat, $color);
+        FFILibXlsxWriter::ffi()->format_set_fg_color($this->getPointer(), $color);
 
         return $this;
     }
 
     public function setBorder(int $border): self
     {
-        FFILibXlsxWriter::ffi()->format_set_border($this->cFormat, $border);
+        FFILibXlsxWriter::ffi()->format_set_border($this->getPointer(), $border);
 
         return $this;
     }
 
     public function setUnlocked(): self
     {
-        FFILibXlsxWriter::ffi()->format_set_unlocked($this->cFormat);
+        FFILibXlsxWriter::ffi()->format_set_unlocked($this->getPointer());
 
         return $this;
     }
 
     public function setHidden(): self
     {
-        FFILibXlsxWriter::ffi()->format_set_hidden($this->cFormat);
+        FFILibXlsxWriter::ffi()->format_set_hidden($this->getPointer());
 
         return $this;
     }
@@ -142,7 +152,7 @@ class Format
      */
     public function setTextWrap(): self
     {
-        FFILibXlsxWriter::ffi()->format_set_text_wrap($this->cFormat);
+        FFILibXlsxWriter::ffi()->format_set_text_wrap($this->getPointer());
 
         return $this;
     }
@@ -154,7 +164,7 @@ class Format
      */
     public function setIndent(int $level): self
     {
-        FFILibXlsxWriter::ffi()->format_set_indent($this->cFormat, $level);
+        FFILibXlsxWriter::ffi()->format_set_indent($this->getPointer(), $level);
 
         return $this;
     }
