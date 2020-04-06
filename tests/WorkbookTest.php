@@ -14,7 +14,6 @@ class WorkbookTest extends FFITestCase
      */
     public function testCallAfterClose(callable $callable): void
     {
-
         $workbook = new Workbook(sys_get_temp_dir() . '/test.xlsx');
         $callable($workbook);
         $workbook->close();
