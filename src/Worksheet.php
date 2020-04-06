@@ -3,6 +3,7 @@
 namespace FFILibXlsxWriter;
 
 use FFI\CData;
+use FFILibXlsxWriter\Structs\DataValidation;
 use FFILibXlsxWriter\Structs\ImageBuffer;
 use FFILibXlsxWriter\Structs\ImageOptions;
 use FFILibXlsxWriter\Structs\Protection;
@@ -239,7 +240,7 @@ class Worksheet
             $this->cWorksheet,
             $row,
             $col,
-            $richString->getPointer(),
+            $richString->getStruct(),
             $format ? $format->getCFormat() : null
         );
 
@@ -587,6 +588,27 @@ class Worksheet
         FFILibXlsxWriter::ffi()->worksheet_set_tab_color(
             $this->cWorksheet,
             $color
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param int $row
+     * @param int $col
+     * @param DataValidation $dataValidation
+     * @return $this
+     * @see http://libxlsxwriter.github.io/worksheet_8h.html#a70c4b9cfb27b18258117545ac6ce6da0
+     */
+    public function dataValidationCell(int $row, int $col, DataValidation $dataValidation): self
+    {
+        $this->workbook->addStructure($dataValidation);
+
+        FFILibXlsxWriter::ffi()->worksheet_data_validation_cell(
+            $this->cWorksheet,
+            $row,
+            $col,
+            $dataValidation->getPointer()
         );
 
         return $this;

@@ -1,9 +1,9 @@
 <?php
 
 use FFILibXlsxWriter\FFILibXlsxWriter;
-use FFILibXlsxWriter\Structs\Align;
-use FFILibXlsxWriter\Structs\Color;
-use FFILibXlsxWriter\Structs\Font;
+use FFILibXlsxWriter\Enums\Align;
+use FFILibXlsxWriter\Enums\Color;
+use FFILibXlsxWriter\Enums\Font;
 use FFILibXlsxWriter\Workbook;
 
 require_once __DIR__ . '/../vendor/autoload.php';

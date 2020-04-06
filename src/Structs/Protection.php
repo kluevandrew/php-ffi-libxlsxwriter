@@ -33,7 +33,7 @@ class Protection extends Struct
     public function __construct()
     {
         $ffi = FFILibXlsxWriter::ffi();
-        $this->struct = $ffi->new('struct lxw_protection');
+        $this->struct = $ffi->new('struct lxw_protection', false, false);
         $this->pointer = FFI::addr($this->struct);
     }
 }

@@ -2,16 +2,10 @@
 
 namespace FFILibXlsxWriter\Structs;
 
-use FFI\CData;
 use FFILibXlsxWriter\FFILibXlsxWriter;
 
 class ImageBuffer extends Struct
 {
-    /**
-     * @var CData
-     */
-    protected CData $struct;
-
     /**
      * ImageBuffer constructor.
      * @param int[] $buffer

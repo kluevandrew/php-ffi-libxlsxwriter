@@ -1,6 +1,6 @@
 <?php
 
-namespace FFILibXlsxWriter\Structs;
+namespace FFILibXlsxWriter\Enums;
 
 class Underline
 {

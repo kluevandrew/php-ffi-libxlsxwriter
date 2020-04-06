@@ -5,7 +5,7 @@
  */
 
 use FFILibXlsxWriter\FFILibXlsxWriter;
-use FFILibXlsxWriter\Structs\Align;
+use FFILibXlsxWriter\Enums\Align;
 use FFILibXlsxWriter\Workbook;
 
 require_once __DIR__ . '/../vendor/autoload.php';

@@ -1,8 +1,8 @@
 <?php
 
-namespace FFILibXlsxWriter\Structs;
+namespace FFILibXlsxWriter\Enums;
 
-class Border
+abstract class Border
 {
     public const NONE = 0;
     public const THIN = 1;

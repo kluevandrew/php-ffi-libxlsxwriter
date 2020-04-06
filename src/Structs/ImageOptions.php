@@ -12,9 +12,9 @@ use FFILibXlsxWriter\FFILibXlsxWriter;
  * @property float $x_scale
  * @property float $y_scale
  * @property int $object_position ObjectPosition::*
- * @property string $description
- * @property string $url
- * @property string $tip
+ * @property CharPointer|string $description
+ * @property CharPointer|string $url
+ * @property CharPointer|string $tip
  */
 class ImageOptions extends Struct
 {
@@ -31,8 +31,12 @@ class ImageOptions extends Struct
     /**
      * @return array
      */
-    protected function getCharPointerProperties(): array
+    protected function getStructuralProperties(): array
     {
-        return ['description', 'url', 'tip'];
+        return [
+            'description' => CharPointer::class,
+            'url' => CharPointer::class,
+            'tip' => CharPointer::class,
+        ];
     }
 }

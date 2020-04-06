@@ -9,7 +9,7 @@ use FFILibXlsxWriter\FFILibXlsxWriter;
  * Class WorkbookOptions
  * @property bool $constantMemory
  * @property bool $useZip64
- * @property string|null $tmpDir
+ * @property CharPointer|string|null $tmpDir
  */
 class WorkbookOptions extends Struct
 {
@@ -30,8 +30,10 @@ class WorkbookOptions extends Struct
         $this->tmpdir = $tmpDir;
     }
 
-    protected function getCharPointerProperties(): array
+    protected function getStructuralProperties(): array
     {
-        return ['tmpdir'];
+        return [
+            'tmpdir' => CharPointer::class,
+        ];
     }
 }

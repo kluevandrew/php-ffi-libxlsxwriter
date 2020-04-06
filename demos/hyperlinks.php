@@ -5,8 +5,8 @@
  */
 
 use FFILibXlsxWriter\FFILibXlsxWriter;
-use FFILibXlsxWriter\Structs\Color;
-use FFILibXlsxWriter\Structs\Underline;
+use FFILibXlsxWriter\Enums\Color;
+use FFILibXlsxWriter\Enums\Underline;
 use FFILibXlsxWriter\Workbook;
 
 require_once __DIR__ . '/../vendor/autoload.php';

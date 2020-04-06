@@ -135,4 +135,27 @@ class Format
 
         return $this;
     }
+
+    /**
+     * @return $this
+     * @see http://libxlsxwriter.github.io/format_8h.html#a56d55dd9257d8f0645c62b296d2c196d
+     */
+    public function setTextWrap(): self
+    {
+        FFILibXlsxWriter::ffi()->format_set_text_wrap($this->cFormat);
+
+        return $this;
+    }
+
+    /**
+     * @param int $level
+     * @return $this
+     * @see http://libxlsxwriter.github.io/format_8h.html#a99aea699cd7bb3c56a515c9c9e0caa69
+     */
+    public function setIndent(int $level): self
+    {
+        FFILibXlsxWriter::ffi()->format_set_indent($this->cFormat, $level);
+
+        return $this;
+    }
 }

@@ -8,19 +8,19 @@ use FFI\CData;
 abstract class Struct
 {
     /**
-     * @var CData|mixed
+     * @var CData|null
      */
-    protected CData $struct;
+    protected ?CData $struct = null;
 
     /**
-     * @var CData
+     * @var CData|null
      */
-    protected CData $pointer;
+    protected ?CData $pointer = null;
 
     /**
-     * @var array<string, CharPointer>
+     * @var array<string, Struct>
      */
-    protected array $charPointers = [];
+    protected array $structures = [];
 
     public function __destruct()
     {
@@ -29,18 +29,20 @@ abstract class Struct
 
     public function free(): void
     {
-        if (!FFI::isNull($this->pointer)) {
+        if (null !== $this->pointer && !FFI::isNull($this->pointer)) {
             FFI::free($this->pointer);
+            $this->pointer = null;
         }
+        $this->struct = null;
 
-        /** @var CharPointer $charPointer */
-        foreach ($this->charPointers as $charPointer) {
-            $charPointer->free();
+        /** @var Struct $structure */
+        foreach ($this->structures as $structure) {
+            $structure->free();
         }
-        $this->charPointers = [];
+        $this->structures = [];
     }
 
-    public function getPointer(): CData
+    public function getPointer(): ?CData
     {
         return $this->pointer;
     }
@@ -57,8 +59,8 @@ abstract class Struct
             return $this->{$getter}();
         }
 
-        if ($this->isCharPointerProperty($name)) {
-            return $this->getCharPointerPropertyByName($name);
+        if ($this->isStructuralProperty($name)) {
+            return $this->getStructuralPropertyByName($name);
         }
 
         return $this->struct->{$name};
@@ -72,8 +74,8 @@ abstract class Struct
             return;
         }
 
-        if ($this->isCharPointerProperty($name)) {
-            $this->setCharPointerPropertyByName($name, $value);
+        if ($this->isStructuralProperty($name)) {
+            $this->setStructuralPropertyByName($name, $value);
             return;
         }
 
@@ -83,30 +85,47 @@ abstract class Struct
     /**
      * @return string[] property names
      */
-    protected function getCharPointerProperties(): array
+    protected function getStructuralProperties(): array
     {
         return [];
     }
 
     /**
      * @param string $name
-     * @return bool
+     * @return array
      */
-    protected function isCharPointerProperty(string $name): bool
+    protected function getStructuralPropertyType(string $name): ?array
     {
-        return in_array($name, $this->getCharPointerProperties(), true);
+        $types = $this->getStructuralProperties();
+        if (array_key_exists($name, $types)) {
+            $definition = $types[$name];
+            if (!is_array($definition)) {
+                return [$definition, false];
+            }
+
+            return $definition;
+        }
+
+        throw new \RuntimeException('It\'s not a structural property');
     }
 
     /**
      * @param string $name
-     * @return string
+     * @return bool
      */
-    private function getCharPointerPropertyByName(string $name): ?string
+    protected function isStructuralProperty(string $name): bool
     {
-        if (array_key_exists($name, $this->charPointers)) {
-            /** @var CharPointer $charPointer */
-            $charPointer = $this->charPointers[$name];
-            return $charPointer->getString();
+        return array_key_exists($name, $this->getStructuralProperties());
+    }
+
+    /**
+     * @param string $name
+     * @return Struct
+     */
+    private function getStructuralPropertyByName(string $name): Struct
+    {
+        if (array_key_exists($name, $this->structures)) {
+            return $this->structures[$name];
         }
 
         return null;
@@ -116,19 +135,29 @@ abstract class Struct
      * @param string $name
      * @param string|null $value
      */
-    protected function setCharPointerPropertyByName(string $name, ?string $value): void
+    protected function setStructuralPropertyByName(string $name, $value): void
     {
-        if (array_key_exists($name, $this->charPointers)) {
-            /** @var CharPointer $charPointer */
-            $charPointer = $this->charPointers[$name];
-            $charPointer->free();
-            unset($this->charPointers[$name]);
+        if (array_key_exists($name, $this->structures)) {
+            $struct = $this->structures[$name];
+            $struct->free();
+            unset($this->structures[$name]);
         }
 
-        if (null !== $value) {
-            $charPointer = new CharPointer($value);
-            $this->charPointers[$name] = $charPointer;
-            $this->struct->{$name} = $charPointer->getPointer();
+        if (null === $value) {
+            return;
         }
+
+        list($class, $pointer) = $this->getStructuralPropertyType($name);
+
+        if (!$value instanceof $class) {
+            $value = new $class(...(is_array($value) ? $value : [$value]));
+        }
+
+        if (!$value instanceof Struct) {
+            throw new \RuntimeException('Should be instance of struct');
+        }
+
+        $this->structures[$name] = $value;
+        $this->struct->{$name} = $pointer ? $value->getPointer() : $value->getStruct();
     }
 }

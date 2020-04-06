@@ -1,8 +1,8 @@
 <?php
 
-namespace FFILibXlsxWriter\Structs;
+namespace FFILibXlsxWriter\Enums;
 
-class Align
+abstract class Align
 {
     public const NONE = 0;
     public const LEFT = 1;

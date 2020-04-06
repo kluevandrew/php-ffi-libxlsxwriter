@@ -5,7 +5,7 @@ namespace FFILibXlsxWriter\Structs;
 use FFI;
 use FFILibXlsxWriter\FFILibXlsxWriter;
 
-class CharPointer
+class CharPointer extends Struct
 {
     /**
      * @var string
@@ -16,11 +16,6 @@ class CharPointer
      * @var int
      */
     protected int $size;
-
-    /**
-     * @var FFI\CData
-     */
-    protected FFI\CData $pointer;
 
     /**
      * CharPointer constructor.
@@ -38,13 +33,6 @@ class CharPointer
         $this->free();
     }
 
-    public function free(): void
-    {
-        if (!FFI::isNull($this->pointer)) {
-            FFI::free($this->pointer);
-        }
-    }
-
     private function byteByByteCopy(string $string)
     {
         $ffi = FFILibXlsxWriter::ffi();
@@ -53,28 +41,21 @@ class CharPointer
 
         // char* should be a pointer to a Null-terminated string
         $this->size = $strlen + 1;
-        $this->pointer = $ffi->calloc($this->size, FFI::sizeof(FFI::type('char')));
-        $this->pointer = FFI::cast('char*', $this->pointer);
+
+        $this->struct = $ffi->new(FFI::arrayType(FFI::type('char'), [$this->size]), false, false);
+        $this->pointer = FFI::addr($this->struct);
 
         for ($i = 0; $i < $strlen; $i++) {
-            $this->pointer[$i] = $string[$i];
+            $this->struct[$i] = $string[$i];
         }
 
-        $this->pointer[$strlen] = "\0";
-    }
-
-    /**
-     * @return FFI\CData
-     */
-    public function getPointer(): FFI\CData
-    {
-        return $this->pointer;
+        $this->struct[$strlen] = "\0";
     }
 
     /**
      * @return string
      */
-    public function getString(): string
+    public function __toString(): string
     {
         return $this->string;
     }

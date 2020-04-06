@@ -7,7 +7,7 @@ use FFILibXlsxWriter\FFILibXlsxWriter;
 
 /**
  * Class CommentOptions
- * @property int $visible self::COMMENT_DISPLAY_*
+ * @property int $visible CommentDisplay::*
  * @property string $author
  * @property int $width
  * @property int $height
@@ -24,17 +24,13 @@ use FFILibXlsxWriter\FFILibXlsxWriter;
  */
 class CommentOptions extends Struct
 {
-    public const COMMENT_DISPLAY_DEFAULT = 0;
-    public const COMMENT_DISPLAY_HIDDEN = 1;
-    public const COMMENT_DISPLAY_VISIBLE = 2;
-
     /**
      * CommentOptions constructor.
      */
     public function __construct()
     {
         $ffi = FFILibXlsxWriter::ffi();
-        $this->struct = $ffi->new('struct lxw_comment_options');
+        $this->struct = $ffi->new('struct lxw_comment_options', false, false);
         $this->pointer = FFI::addr($this->struct);
     }
 }

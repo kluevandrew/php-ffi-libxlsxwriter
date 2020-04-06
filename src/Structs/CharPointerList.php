@@ -6,30 +6,33 @@ use FFI;
 use FFI\CData;
 use FFILibXlsxWriter\FFILibXlsxWriter;
 
-class RichString extends Struct
+class CharPointerList extends Struct
 {
     /**
-     * @var RichStringPart[]
+     * @var int
+     */
+    protected int $size;
+
+    /**
+     * @var CharPointer[]
      */
     protected array $parts = [];
 
-    /**
-     * RichString constructor.
-     * @param RichStringPart[] $parts
-     */
-    public function __construct(array $parts)
+    public function __construct(...$strings)
     {
-        $this->parts = $parts;
+        foreach ($strings as $string) {
+            $this->parts[] = is_string($string) ? new CharPointer($string) : $string;
+        }
     }
 
     /**
-     * @param RichStringPart $part
+     * @param CharPointer|string $string
      * @return $this
      */
-    public function push(RichStringPart $part): self
+    public function push($string): self
     {
         $this->free();
-        $this->parts[] = $part;
+        $this->parts[] = is_string($string) ? new CharPointer($string) : $string;
 
         return $this;
     }
@@ -44,7 +47,7 @@ class RichString extends Struct
         $size = count($this->parts);
         $this->struct = $ffi->new(
             FFI::arrayType(
-                $ffi->type('struct lxw_rich_string_tuple*'),
+                $ffi->type('char*'),
                 [$size + 1]
             ),
             false,
@@ -52,7 +55,7 @@ class RichString extends Struct
         );
 
         foreach ($this->parts as $i => $part) {
-            $this->struct[$i] = $part->getPointer();
+            $this->struct[$i] = $part->getStruct();
         }
 
         $this->struct[$size] = null;

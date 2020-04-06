@@ -19,7 +19,12 @@ class Workbook
     /**
      * @var Format|null
      */
-    private ?Format $defaultUrlFormat = null;
+    protected ?Format $defaultUrlFormat = null;
+
+    /**
+     * @var bool
+     */
+    protected bool $isClosed = false;
 
     /**
      * Workbook constructor.
@@ -65,6 +70,11 @@ class Workbook
      */
     public function close(): void
     {
+        if ($this->isClosed) {
+            throw new \RuntimeException('Already closed');
+        }
+        $this->isClosed = true;
+
         FFILibXlsxWriter::ffi()->workbook_close($this->cWorkbook);
         $this->free();
     }
@@ -80,6 +90,7 @@ class Workbook
     }
 
     /**
+     * @internal
      * @param Struct $struct
      */
     public function addStructure(Struct $struct)

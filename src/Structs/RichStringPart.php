@@ -7,17 +7,17 @@ use FFI\CData;
 use FFILibXlsxWriter\FFILibXlsxWriter;
 use FFILibXlsxWriter\Style\Format;
 
-class RichStringPart
+/**
+ * Class RichStringPart
+ * @property CharPointer|string|null $string
+ * @property Format $format
+ */
+class RichStringPart extends Struct
 {
-    /**
-     * @var string
-     */
-    protected string $string;
-
     /**
      * @var Format|null
      */
-    protected ?Format $format;
+    protected ?Format $phpFormat;
 
     /**
      * @var CData
@@ -29,85 +29,31 @@ class RichStringPart
      */
     protected ?CData $pointer = null;
 
-    /**
-     * @var CharPointer|null
-     */
-    protected ?CharPointer $charPointer = null;
-
     public function __construct(string $string, Format $format = null)
     {
-        $this->string = $string;
-        $this->format = $format;
-    }
-
-    private function allocate(): void
-    {
         $ffi = FFILibXlsxWriter::ffi();
-
-        $this->charPointer = new CharPointer($this->string);
-        $this->struct = $ffi->new($ffi->type('lxw_rich_string_tuple'));
-        $this->struct->string = $this->charPointer->getPointer();
-        if (null !== $this->format) {
-            $this->struct->format = $this->format->getCFormat();
-        }
+        $this->struct = $ffi->new($ffi->type('struct lxw_rich_string_tuple'), false, false);
         $this->pointer = FFI::addr($this->struct);
-    }
 
-    /**
-     * @param string $string
-     * @return RichStringPart
-     */
-    public function setString(string $string): self
-    {
         $this->string = $string;
-        $this->free();
-
-        return $this;
+        $this->format = $format ? $format->getCFormat() : null;
     }
 
-    /**
-     * @param Format|null $format
-     * @return RichStringPart
-     */
-    public function setFormat(?Format $format): self
+    public function setFormatAttribute(?Format $format): void
     {
-        $this->format = $format;
-        if (null !== $this->struct) {
-            $this->struct->format = $this->format->getCFormat();
-        }
-
-        return $this;
+        $this->phpFormat = $format ? $format->getCFormat() : null;
+        $this->struct->format = $format ? $format->getCFormat() : null;
     }
 
-    /**
-     * @return CData
-     */
-    public function getPointer(): CData
+    public function getFormatAttribute(): ?Format
     {
-        if (null === $this->pointer) {
-            $this->allocate();
-        }
-
-        return $this->pointer;
+        return $this->phpFormat;
     }
 
-    /**
-     * Deallocate
-     */
-    protected function free(): void
+    protected function getStructuralProperties(): array
     {
-        if ($this->charPointer) {
-            $this->charPointer->free();
-            $this->charPointer = null;
-        }
-
-        if ($this->pointer) {
-            if (!FFI::isNull($this->pointer)) {
-                FFI::free($this->pointer);
-            }
-            $this->pointer = null;
-        }
-
-        $this->struct = null;
+        return [
+            'string' => CharPointer::class,
+        ];
     }
 }

@@ -5,9 +5,9 @@
  */
 
 use FFILibXlsxWriter\FFILibXlsxWriter;
-use FFILibXlsxWriter\Structs\Align;
-use FFILibXlsxWriter\Structs\Border;
-use FFILibXlsxWriter\Structs\Color;
+use FFILibXlsxWriter\Enums\Align;
+use FFILibXlsxWriter\Enums\Border;
+use FFILibXlsxWriter\Enums\Color;
 use FFILibXlsxWriter\Structs\RichString;
 use FFILibXlsxWriter\Structs\RichStringPart;
 use FFILibXlsxWriter\Workbook;

@@ -1,8 +1,8 @@
 <?php
 
-namespace FFILibXlsxWriter\Structs;
+namespace FFILibXlsxWriter\Enums;
 
-class Color
+abstract class Color
 {
     public const BLACK = 0x1000000;
     public const BLUE = 0x0000FF;
