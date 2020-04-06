@@ -3,6 +3,8 @@
 namespace Tests;
 
 use FFILibXlsxWriter\Enums\Color;
+use FFILibXlsxWriter\Enums\Gridlines;
+use FFILibXlsxWriter\Enums\PaperType;
 use FFILibXlsxWriter\Enums\ValidationCriteria;
 use FFILibXlsxWriter\Exceptions\CallAfterCloseException;
 use FFILibXlsxWriter\Structs\DataValidation;
@@ -38,6 +40,12 @@ class WorksheetTest extends FFITestCase
             'dataValidationCell' => [
                 fn(Worksheet $worksheet) => $worksheet->dataValidationCell(
                     'A1',
+                    new DataValidation(ValidationCriteria::GREATER_THAN)
+                )
+            ],
+            'dataValidationRange' => [
+                fn(Worksheet $worksheet) => $worksheet->dataValidationCell(
+                    'A1:b10',
                     new DataValidation(ValidationCriteria::GREATER_THAN)
                 )
             ],
@@ -80,6 +88,46 @@ class WorksheetTest extends FFITestCase
             'setFooter' => [fn(Worksheet $worksheet) => $worksheet->setFooter('footer')],
             'setHorizontalBreaks' => [fn(Worksheet $worksheet) => $worksheet->setHorizontalBreaks([20, 0])],
             'setVerticalBreaks' => [fn(Worksheet $worksheet) => $worksheet->setVerticalBreaks([20, 0])],
+//            'insertChart' => [fn(Worksheet $worksheet) => $worksheet->insertChart()],
+            'activate' => [fn(Worksheet $worksheet) => $worksheet->activate()],
+            'select' => [fn(Worksheet $worksheet) => $worksheet->select()],
+            'hide' => [fn(Worksheet $worksheet) => $worksheet->hide()],
+            'setFirstSheet' => [fn(Worksheet $worksheet) => $worksheet->setFirstSheet()],
+            'setLandscape' => [fn(Worksheet $worksheet) => $worksheet->setLandscape()],
+            'setPortrait' => [fn(Worksheet $worksheet) => $worksheet->setPortrait()],
+            'setPageView' => [fn(Worksheet $worksheet) => $worksheet->setPageView()],
+            'setPaper' => [fn(Worksheet $worksheet) => $worksheet->setPaper(PaperType::A3)],
+            'setMargins' => [fn(Worksheet $worksheet) => $worksheet->setMargins(0.1, 0.1, 1, 1)],
+            'printAcross' => [fn(Worksheet $worksheet) => $worksheet->printAcross()],
+            'setZoom' => [fn(Worksheet $worksheet) => $worksheet->setZoom(2)],
+            'gridlines' => [fn(Worksheet $worksheet) => $worksheet->gridlines(Gridlines::HIDE_ALL)],
+            'centerHorizontally' => [fn(Worksheet $worksheet) => $worksheet->centerHorizontally()],
+            'centerVertically' => [fn(Worksheet $worksheet) => $worksheet->centerVertically()],
+            'printRowColHeaders' => [fn(Worksheet $worksheet) => $worksheet->printRowColHeaders()],
+            'repeatRows' => [fn(Worksheet $worksheet) => $worksheet->repeatRows(1, 10)],
+            'repeatColumns' => [fn(Worksheet $worksheet) => $worksheet->repeatColumns('A:B')],
+            'printArea' => [fn(Worksheet $worksheet) => $worksheet->printArea('A1:B1')],
+            'fitToPages' => [fn(Worksheet $worksheet) => $worksheet->fitToPages(100, 100)],
+            'setStartPage' => [fn(Worksheet $worksheet) => $worksheet->setStartPage(1)],
+            'setPrintScale' => [fn(Worksheet $worksheet) => $worksheet->setPrintScale(0.5)],
+            'rightToLeft' => [fn(Worksheet $worksheet) => $worksheet->rightToLeft()],
+            'hideZero' => [fn(Worksheet $worksheet) => $worksheet->hideZero()],
+            'worksheetOutlineSettings' => [
+                fn(Worksheet $worksheet) => $worksheet->worksheetOutlineSettings(
+                    true,
+                    false,
+                    true,
+                    false
+                )
+            ],
+            'worksheetSetDefaultRow' => [
+                fn(Worksheet $worksheet) => $worksheet->worksheetSetDefaultRow(10, false)
+            ],
+            'worksheetSetVbaName' => [fn(Worksheet $worksheet) => $worksheet->worksheetSetVbaName('name')],
+            'worksheetShowComments' => [fn(Worksheet $worksheet) => $worksheet->worksheetShowComments()],
+            'worksheetSetCommentsAuthor' => [
+                fn(Worksheet $worksheet) => $worksheet->worksheetSetCommentsAuthor('name')
+            ],
         ];
     }
 

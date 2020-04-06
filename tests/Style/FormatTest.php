@@ -5,17 +5,12 @@ namespace Tests\Style;
 use FFILibXlsxWriter\Enums\Align;
 use FFILibXlsxWriter\Enums\Border;
 use FFILibXlsxWriter\Enums\Color;
-use FFILibXlsxWriter\Enums\Font;
+use FFILibXlsxWriter\Enums\FontScript;
+use FFILibXlsxWriter\Enums\Pattern;
 use FFILibXlsxWriter\Enums\Underline;
-use FFILibXlsxWriter\Enums\ValidationCriteria;
 use FFILibXlsxWriter\Exceptions\CallAfterCloseException;
-use FFILibXlsxWriter\Structs\DataValidation;
-use FFILibXlsxWriter\Structs\DateTime;
-use FFILibXlsxWriter\Structs\ImageBuffer;
-use FFILibXlsxWriter\Structs\RichString;
 use FFILibXlsxWriter\Style\Format;
 use FFILibXlsxWriter\Workbook;
-use FFILibXlsxWriter\Worksheet;
 use Tests\FFITestCase;
 
 class FormatTest extends FFITestCase
@@ -29,16 +24,6 @@ class FormatTest extends FFITestCase
     {
         $workbook = new Workbook(sys_get_temp_dir() . '/test.xlsx');
         $format = $workbook->addFormat();
-//        $reflectionCLass= new \ReflectionClass($format);
-//        $methods = $reflectionCLass->getMethods(\ReflectionMethod::IS_PUBLIC);
-//        $string = '';
-//        foreach ($methods as $method) {
-//            $string .= "'{$method->name}' => [fn(Format \$format) => \$format->{$method->name}()],\n";
-//        }
-//        echo PHP_EOL;
-//        echo $string;
-//        echo PHP_EOL;
-//        die;
         $callable($format);
         $workbook->close();
 
@@ -58,7 +43,7 @@ class FormatTest extends FFITestCase
             'setItalic' => [fn(Format $format) => $format->setItalic()],
             'setFontColor' => [fn(Format $format) => $format->setFontColor(Color::RED)],
             'setAlign' => [fn(Format $format) => $format->setAlign(Align::VERTICAL_CENTER)],
-            'setFontScript' => [fn(Format $format) => $format->setFontScript(Font::SUPERSCRIPT)],
+            'setFontScript' => [fn(Format $format) => $format->setFontScript(FontScript::SUPERSCRIPT)],
             'setUnderline' => [fn(Format $format) => $format->setUnderline(Underline::DOUBLE)],
             'setBgColor' => [fn(Format $format) => $format->setBgColor(Color::RED)],
             'setFgColor' => [fn(Format $format) => $format->setFgColor(Color::BLUE)],
@@ -67,6 +52,22 @@ class FormatTest extends FFITestCase
             'setHidden' => [fn(Format $format) => $format->setHidden()],
             'setTextWrap' => [fn(Format $format) => $format->setTextWrap()],
             'setIndent' => [fn(Format $format) => $format->setIndent(2)],
+            'setFontName' => [fn(Format $format) => $format->setFontName('Arial')],
+            'setFontSize' => [fn(Format $format) => $format->setFontSize(22)],
+            'setFontStrikeout' => [fn(Format $format) => $format->setFontStrikeout()],
+            'setNumFormatIndex' => [fn(Format $format) => $format->setNumFormatIndex(1)],
+            'setRotation' => [fn(Format $format) => $format->setRotation(10)],
+            'setShrink' => [fn(Format $format) => $format->setShrink()],
+            'setPattern' => [fn(Format $format) => $format->setPattern(Pattern::DARK_GRAY)],
+            'setBottom' => [fn(Format $format) => $format->setBottom(Border::DOUBLE)],
+            'setTop' => [fn(Format $format) => $format->setTop(Border::DASHED)],
+            'setLeft' => [fn(Format $format) => $format->setLeft(Border::HAIR)],
+            'setRight' => [fn(Format $format) => $format->setRight(Border::THICK)],
+            'setBorderColor' => [fn(Format $format) => $format->setBorderColor(Color::BROWN)],
+            'setBottomColor' => [fn(Format $format) => $format->setBottomColor(Color::BROWN)],
+            'setTopColor' => [fn(Format $format) => $format->setTopColor(Color::BROWN)],
+            'setLeftColor' => [fn(Format $format) => $format->setLeftColor(Color::BROWN)],
+            'setRightColor' => [fn(Format $format) => $format->setRightColor(Color::BROWN)],
         ];
     }
 }

@@ -9,7 +9,7 @@
 use FFILibXlsxWriter\FFILibXlsxWriter;
 use FFILibXlsxWriter\Enums\Align;
 use FFILibXlsxWriter\Enums\Color;
-use FFILibXlsxWriter\Enums\Font;
+use FFILibXlsxWriter\Enums\FontScript;
 use FFILibXlsxWriter\Structs\RichString;
 use FFILibXlsxWriter\Structs\RichStringPart;
 use FFILibXlsxWriter\Workbook;
@@ -33,7 +33,7 @@ $blue->setFontColor(Color::BLUE);
 $center = $workbook->addFormat();
 $center->setAlign(Align::CENTER);
 $superscript = $workbook->addFormat();
-$superscript->setFontScript(Font::SUPERSCRIPT);
+$superscript->setFontScript(FontScript::SUPERSCRIPT);
 /* Make the first column wider for clarity. */
 $worksheet->setColumn([0, 0], 30);
 /*

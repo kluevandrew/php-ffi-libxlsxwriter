@@ -7,7 +7,7 @@
 use FFILibXlsxWriter\FFILibXlsxWriter;
 use FFILibXlsxWriter\Enums\Align;
 use FFILibXlsxWriter\Enums\Color;
-use FFILibXlsxWriter\Enums\Font;
+use FFILibXlsxWriter\Enums\FontScript;
 use FFILibXlsxWriter\Workbook;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -30,7 +30,7 @@ $centered = $workbook->addFormat();
 $centered->setAlign(Align::CENTER);
 
 $superscript = $workbook->addFormat();
-$superscript->setFontScript(Font::SUPERSCRIPT);
+$superscript->setFontScript(FontScript::SUPERSCRIPT);
 
 $worksheet->writeString([0, 0], 'This is bold', $bold);
 $worksheet->writeString([1, 0], 'This is italic', $bold);
