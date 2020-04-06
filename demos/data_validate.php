@@ -248,7 +248,7 @@ $worksheet->dataValidationCell($row, $col, $data_validation);
  */
 $data_validation = new DataValidation();
 list($row, $col) = FFILibXlsxWriter::cell('A29');
-$worksheet->writeString($row, $col,"Display a custom info message when integer isn't between 1 and 100");
+$worksheet->writeString($row, $col, "Display a custom info message when integer isn't between 1 and 100");
 $data_validation->validate = ValidationType::INTEGER;
 $data_validation->criteria = ValidationCriteria::BETWEEN;
 $data_validation->minimum_number = 1;
