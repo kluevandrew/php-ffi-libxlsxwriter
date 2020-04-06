@@ -18,7 +18,7 @@ Example programs using libxlsxwriter:
 * [merge_range.php](../demos/merge_range.php) Create a merged range of cells
 * [merge_rich_string.php](../demos/merge_rich_string.php) Create a merged range with a rich string
 * [autofilter.php](../demos/autofilter.php) An example of a worksheet autofilter
-* not-ready [data_validate.php](../demos/data_validate.php) Examples of worksheet data validation and drop down lists
+* [data_validate.php](../demos/data_validate.php) Examples of worksheet data validation and drop down lists
 * [images.php](../demos/images.php) Example of adding images to a worksheet.
 * [image_buffer.php](../demos/image_buffer.php) Example of adding an image from a memory buffer.
 * not-ready [headers_footers.php](../demos/headers_footers.php) Example of adding worksheet headers/footers
