@@ -34,7 +34,7 @@ Example programs using libxlsxwriter:
 * not-ready [hide_row_col.php](../demos/hide_row_col.php) Example of hiding worksheet rows and columns
 * not-ready [comments1.php](../demos/comments1.php) Example of adding cell comments to a worksheet
 * not-ready [comments2.php](../demos/comments2.php) Example of adding cell comments with options
-* not-ready [macro.php](../demos/macro.php) Example of adding a VBA macro to a workbook
+* [macro.php](../demos/macro.php) Example of adding a VBA macro to a workbook
 * [panes.php](../demos/panes.php) Example of how to create worksheet panes
 * not-ready [chart.php](../demos/chart.php) Example of a simple column chart
 * not-ready [chart_area.php](../demos/chart_area.php) Examples of area charts

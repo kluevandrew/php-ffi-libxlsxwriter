@@ -51,7 +51,11 @@ class WorkbookTest extends FFITestCase
             'getWorksheetByName' => [fn(Workbook $workbook) => $workbook->getWorksheetByName('any')],
             'getChartsheetByName' => [fn(Workbook $workbook) => $workbook->getChartsheetByName('any')],
             'validateSheetname' => [fn(Workbook $workbook) => $workbook->validateSheetname('any')],
-//            'addVbaProject' => [fn(Workbook $workbook) => $workbook->addVbaProject()],
+            'addVbaProject' => [
+                fn(Workbook $workbook) => $workbook->addVbaProject(
+                    __DIR__ . '/../demos/vbaProject.bin'
+                )
+            ],
             'setVbaName' => [fn(Workbook $workbook) => $workbook->setVbaName('name')],
         ];
     }
