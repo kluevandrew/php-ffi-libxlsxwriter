@@ -2,8 +2,6 @@
 
 namespace FFILibXlsxWriter;
 
-use FFILibXlsxWriter\Contracts\Closable;
-use FFILibXlsxWriter\Contracts\DoNotFreeDirectly;
 use FFILibXlsxWriter\Exceptions\FFILibXlsxWriterException;
 use FFILibXlsxWriter\Exceptions\UnimplementedException;
 use FFILibXlsxWriter\Options\HeaderFooterOptions;
@@ -17,46 +15,25 @@ use FFILibXlsxWriter\Structs\RichString;
 use FFILibXlsxWriter\Style\Format;
 use FFILibXlsxWriter\Options\CommentOptions;
 use FFILibXlsxWriter\Structs\DateTime;
-use FFILibXlsxWriter\Traits\ClosableStruct;
 use FFILibXlsxWriter\Enums;
 
 /**
  * Class Worksheet
  * @see http://libxlsxwriter.github.io/worksheet_8h.html
  */
-class Worksheet extends Struct implements DoNotFreeDirectly, Closable
+class Worksheet extends Sheet
 {
-    use ClosableStruct;
+    protected ?IntegerList $horizontalBreaks = null;
 
-    protected Workbook $workbook;
-
-    private ?IntegerList $horizontalBreaks = null;
-
-    private ?IntegerList $verticalBreaks = null;
+    protected ?IntegerList $verticalBreaks = null;
 
     /**
-     * Worksheet constructor.
-     * @param Workbook $workbook
-     * @param string|null $name
+     * @return string
      * @see http://libxlsxwriter.github.io/workbook_8h.html#a81d456b4f65a464e78e4a0030ecc3c2e
-     * @see Workbook::addWorksheet()
      */
-    public function __construct(Workbook $workbook, ?string $name)
+    protected function getType(): string
     {
-        $this->workbook = $workbook;
-        $this->pointer = FFILibXlsxWriter::ffi()->workbook_add_worksheet(
-            $this->workbook->getPointer(),
-            $name
-        );
-        $this->struct = $this->pointer[0];
-    }
-
-    protected function free(): void
-    {
-        $this->pointer = null;
-        $this->struct = null;
-
-        parent::free();
+        return 'worksheet';
     }
 
     /**
@@ -1122,57 +1099,5 @@ class Worksheet extends Struct implements DoNotFreeDirectly, Closable
             false,
             [$author]
         );
-    }
-
-    /**
-     * @param string $phpMethod
-     * @param string $cMethod
-     * @param bool $catch
-     * @param array $arguments
-     * @return $this
-     * @throws Exceptions\CallAfterCloseException
-     * @throws FFILibXlsxWriterException
-     */
-    protected function proxy(string $phpMethod, string $cMethod, bool $catch = false, array $arguments = []): self
-    {
-        $this->throwIfClosed($phpMethod);
-
-        $cMethod = 'worksheet_' . $cMethod;
-
-        $code = FFILibXlsxWriter::ffi()->{$cMethod}(
-            $this->getPointer(),
-            ...$arguments
-        );
-
-        if ($catch && $code !== 0) {
-            throw FFILibXlsxWriterException::byCode(FFILibXlsxWriter::getLog(), $code);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param string $phpMethod
-     * @param string $cMethod
-     * @param bool $catch
-     * @param array $arguments
-     * @param Struct|null $options
-     * @return $this
-     * @throws Exceptions\CallAfterCloseException
-     * @throws FFILibXlsxWriterException
-     */
-    protected function proxyOpt(
-        string $phpMethod,
-        string $cMethod,
-        bool $catch = false,
-        array $arguments = [],
-        Struct $options = null
-    ): self {
-        if (null !== $options) {
-            $cMethod .= '_opt';
-            $arguments[] = $options->getPointer();
-        }
-
-        return $this->proxy($phpMethod, $cMethod, $catch, $arguments);
     }
 }

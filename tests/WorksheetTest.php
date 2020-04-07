@@ -44,8 +44,8 @@ class WorksheetTest extends FFITestCase
                 )
             ],
             'dataValidationRange' => [
-                fn(Worksheet $worksheet) => $worksheet->dataValidationCell(
-                    'A1:b10',
+                fn(Worksheet $worksheet) => $worksheet->dataValidationRange(
+                    'A1:B10',
                     new DataValidation(ValidationCriteria::GREATER_THAN)
                 )
             ],

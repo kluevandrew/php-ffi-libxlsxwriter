@@ -7,6 +7,7 @@ use FFILibXlsxWriter\Contracts\DoNotFreeDirectly;
 use FFILibXlsxWriter\Exceptions\CallAfterCloseException;
 use FFILibXlsxWriter\Exceptions\FFILibXlsxWriterException;
 use FFILibXlsxWriter\Exceptions\UnimplementedException;
+use FFILibXlsxWriter\Options\DocProperties;
 use FFILibXlsxWriter\Options\WorkbookOptions;
 use FFILibXlsxWriter\Structs\DateTime;
 use FFILibXlsxWriter\Style\Format;
@@ -31,6 +32,16 @@ class Workbook extends Struct implements DoNotFreeDirectly, Closable
      * @var bool
      */
     protected bool $closed = false;
+
+    /**
+     * @var Worksheet[]
+     */
+    protected array $worksheets = [];
+
+    /**
+     * @var Chartsheet[]
+     */
+    protected array $chartsheets = [];
 
     /**
      * Workbook constructor.
@@ -61,6 +72,7 @@ class Workbook extends Struct implements DoNotFreeDirectly, Closable
 
         $worksheet = new Worksheet($this, $name);
 
+        $this->worksheets[] = $worksheet;
         $this->addStructure($worksheet);
 
         return $worksheet;
@@ -68,15 +80,21 @@ class Workbook extends Struct implements DoNotFreeDirectly, Closable
 
     /**
      * @param string|null $name
+     * @return Chartsheet
      * @throws CallAfterCloseException
      * @throws FFILibXlsxWriterException
      * @see http://libxlsxwriter.github.io/workbook_8h.html#a9cb69c057990a4139f0a19b53b04b805
      */
-    public function addChartsheet(string $name = null): void
+    public function addChartsheet(string $name = null): Chartsheet
     {
         $this->throwIfClosed(__METHOD__);
 
-        throw new UnimplementedException(__METHOD__);
+        $chartsheet = new Chartsheet($this, $name);
+
+        $this->chartsheets[] = $chartsheet;
+        $this->addStructure($chartsheet);
+
+        return $chartsheet;
     }
 
     /**
@@ -121,85 +139,99 @@ class Workbook extends Struct implements DoNotFreeDirectly, Closable
 
     /**
      * @param $properties
+     * @return Workbook
      * @throws CallAfterCloseException
      * @throws FFILibXlsxWriterException
      * @see http://libxlsxwriter.github.io/workbook_8h.html#aa814fd7f8d2c3ce86a7aa5d5ed127000
      */
-    public function setProperties($properties): void
+    public function setProperties(DocProperties $properties): self
     {
-        $this->throwIfClosed(__METHOD__);
-
-        throw new UnimplementedException(__METHOD__);
+        return $this->proxy(__METHOD__, 'set_properties', [$properties->getPointer()]);
     }
 
     /**
      * @param string $name
      * @param string $value
+     * @return $this
      * @throws CallAfterCloseException
      * @throws FFILibXlsxWriterException
      * @see http://libxlsxwriter.github.io/workbook_8h.html#a337caad1c1cb16fed505a180d77f20d3
      */
-    public function setCustomPropertyString(string $name, string $value): void
+    public function setCustomPropertyString(string $name, string $value): self
     {
-        $this->throwIfClosed(__METHOD__);
-
-        throw new UnimplementedException(__METHOD__);
+        return $this->proxy(
+            __METHOD__,
+            'set_custom_property_string',
+            [$name, $value]
+        );
     }
 
     /**
      * @param string $name
      * @param float $value
+     * @return Workbook
      * @throws CallAfterCloseException
      * @throws FFILibXlsxWriterException
      * @see http://libxlsxwriter.github.io/workbook_8h.html#af2d8534bf9d58e48491a761228d31e14
      */
-    public function setCustomPropertyNumber(string $name, float $value): void
+    public function setCustomPropertyNumber(string $name, float $value): self
     {
-        $this->throwIfClosed(__METHOD__);
-
-        throw new UnimplementedException(__METHOD__);
+        return $this->proxy(
+            __METHOD__,
+            'set_custom_property_number',
+            [$name, $value]
+        );
     }
 
     /**
      * @param string $name
      * @param bool $value
+     * @return Workbook
      * @throws CallAfterCloseException
      * @throws FFILibXlsxWriterException
      * @see http://libxlsxwriter.github.io/workbook_8h.html#a929d2f7063651d872ccac14180e042a4
      */
-    public function setCustomPropertyBoolean(string $name, bool $value): void
+    public function setCustomPropertyBoolean(string $name, bool $value): self
     {
-        $this->throwIfClosed(__METHOD__);
-
-        throw new UnimplementedException(__METHOD__);
+        return $this->proxy(
+            __METHOD__,
+            'set_custom_property_boolean',
+            [$name, $value]
+        );
     }
 
     /**
      * @param string $name
      * @param DateTime $value
+     * @return Workbook
      * @throws CallAfterCloseException
      * @throws FFILibXlsxWriterException
      * @see http://libxlsxwriter.github.io/workbook_8h.html#a843f0d1132a7eb3f8e3e9518ff27e5c9
      */
-    public function setCustomPropertyDateTime(string $name, DateTime $value): void
+    public function setCustomPropertyDateTime(string $name, DateTime $value): self
     {
-        $this->throwIfClosed(__METHOD__);
-
-        throw new UnimplementedException(__METHOD__);
+        return $this->proxy(
+            __METHOD__,
+            'set_custom_property_datetime',
+            [$name, $value->getPointer()]
+        );
     }
 
     /**
      * @param string $name
      * @param string $formula
+     * @return Workbook
      * @throws CallAfterCloseException
      * @throws FFILibXlsxWriterException
      * @see http://libxlsxwriter.github.io/workbook_8h.html#a442b4056e8d4debf56c07888f2a776f6
      */
-    public function defineName(string $name, string $formula): void
+    public function defineName(string $name, string $formula): self
     {
-        $this->throwIfClosed(__METHOD__);
-
-        throw new UnimplementedException(__METHOD__);
+        return $this->proxy(
+            __METHOD__,
+            'define_name',
+            [$name, $formula]
+        );
     }
 
     /**
@@ -221,67 +253,154 @@ class Workbook extends Struct implements DoNotFreeDirectly, Closable
 
     /**
      * @param string $name
-     * @return Worksheet
+     * @return Worksheet|null
      * @throws CallAfterCloseException
      * @throws FFILibXlsxWriterException
      * @see http://libxlsxwriter.github.io/workbook_8h.html#a857f1d02d04a7d5a039642abde91c280
      */
-    public function getWorksheetByName(string $name): Worksheet
+    public function getWorksheetByName(string $name): ?Worksheet
     {
         $this->throwIfClosed(__METHOD__);
 
-        throw new UnimplementedException(__METHOD__);
+        $worksheetPointer = FFILibXlsxWriter::ffi()->workbook_get_worksheet_by_name(
+            $this->getPointer(),
+            $name
+        );
+        if ($worksheetPointer === null) {
+            return null;
+        }
+
+        foreach ($this->worksheets as $worksheet) {
+            if ($worksheet->getPointer() == $worksheetPointer) {
+                return $worksheet;
+            }
+        }
+
+        return null;
     }
 
     /**
      * @param string $name
+     * @return Chartsheet|null
      * @throws CallAfterCloseException
      * @throws FFILibXlsxWriterException
      * @see http://libxlsxwriter.github.io/workbook_8h.html#a857f1d02d04a7d5a039642abde91c280
      */
-    public function getChartsheetByName(string $name): void
+    public function getChartsheetByName(string $name): ?Chartsheet
     {
         $this->throwIfClosed(__METHOD__);
 
-        throw new UnimplementedException(__METHOD__);
+        $chartsheetPointer = FFILibXlsxWriter::ffi()->workbook_get_chartsheet_by_name(
+            $this->getPointer(),
+            $name
+        );
+        if ($chartsheetPointer === null) {
+            return null;
+        }
+
+        foreach ($this->chartsheets as $chartsheet) {
+            if ($chartsheet->getPointer() == $chartsheetPointer) {
+                return $chartsheet;
+            }
+        }
+
+        return null;
     }
 
     /**
+     * This function is used to validate a worksheet or chartsheet name according to the rules used by Excel:
+     * The name is less than or equal to 31 UTF-8 characters.
+     * The name doesn't contain any of the characters: [ ] : * ? / \
+     * The name doesn't start or end with an apostrophe.
+     * The name isn't "History", which is reserved by Excel. (Case insensitive).
+     * The name isn't already in use. (Case insensitive, see the note below).
+     *
      * @param string $name
+     * @return bool
      * @throws CallAfterCloseException
-     * @throws FFILibXlsxWriterException
      * @see http://libxlsxwriter.github.io/workbook_8h.html#a9ecbd616a8306c88210794140c434031
      */
-    public function validateSheetname(string $name): void
+    public function validateSheetname(string $name): bool
     {
         $this->throwIfClosed(__METHOD__);
 
-        throw new UnimplementedException(__METHOD__);
+        $result = FFILibXlsxWriter::ffi()->workbook_validate_sheet_name(
+            $this->getPointer(),
+            $name
+        );
+
+        return $result === 0;
     }
 
     /**
      * @param string $filename
+     * @return Workbook
      * @throws CallAfterCloseException
      * @throws FFILibXlsxWriterException
      * @see http://libxlsxwriter.github.io/workbook_8h.html#a8de478eed94be65de0622c64a0179ff9
      */
-    public function addVbaProject(string $filename): void
+    public function addVbaProject(string $filename): self
     {
-        $this->throwIfClosed(__METHOD__);
-
-        throw new UnimplementedException(__METHOD__);
+        return $this->proxy(
+            __METHOD__,
+            'add_vba_project',
+            [$filename]
+        );
     }
 
     /**
      * @param string $name
+     * @return Workbook
      * @throws CallAfterCloseException
      * @throws FFILibXlsxWriterException
      * @see http://libxlsxwriter.github.io/workbook_8h.html#a24dd6624ffdc3e17aa5bcfb4608755b8
      */
-    public function setVbaName(string $name): void
+    public function setVbaName(string $name): self
     {
-        $this->throwIfClosed(__METHOD__);
+        return $this->proxy(
+            __METHOD__,
+            'set_vba_name',
+            [$name]
+        );
+    }
 
-        throw new UnimplementedException(__METHOD__);
+    /**
+     * @param string $phpMethod
+     * @param string $cMethod
+     * @param array $arguments
+     * @return $this
+     * @throws CallAfterCloseException
+     * @throws FFILibXlsxWriterException
+     */
+    protected function proxy(string $phpMethod, string $cMethod, array $arguments = []): self
+    {
+        $this->throwIfClosed($phpMethod);
+
+        $cMethod = 'workbook_' . $cMethod;
+        $code = FFILibXlsxWriter::ffi()->{$cMethod}(
+            $this->getPointer(),
+            ...$arguments
+        );
+
+        if ($code !== 0) {
+            throw FFILibXlsxWriterException::byCode(FFILibXlsxWriter::getLog(), $code);
+        }
+
+        return $this;
+    }
+
+    /**
+     * PHP segfaults when dump CDATA of workbook after adding first sheet
+     * @return array
+     * @throws CallAfterCloseException
+     */
+    public function __debugInfo(): array
+    {
+        return [
+            'closed' => $this->closed,
+            'worksheets' => $this->worksheets,
+            'structures' => $this->structures,
+            'defaultUrlFormat' => $this->getDefaultUrlFormat(),
+        ];
     }
 }
