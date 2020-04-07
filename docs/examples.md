@@ -25,15 +25,15 @@ Example programs using libxlsxwriter:
 * [headers_footers.php](../demos/headers_footers.php) Example of adding worksheet headers/footers
 * [defined_name.php](../demos/defined_name.php) Example of how to create defined names
 * [outline.php](../demos/outline.php) Example of grouping and outlines
-* not-ready [outline_collapsed.php](../demos/outline_collapsed.php) Example of grouping and collapsed outlines
+* [outline_collapsed.php](../demos/outline_collapsed.php) Example of grouping and collapsed outlines
 * [tab_colors.php](../demos/tab_colors.php) Example of how to set worksheet tab colors
-* not-ready [hide_sheet.php](../demos/hide_sheet.php) Example of hiding a worksheet
-* not-ready [doc_properties.php](../demos/doc_properties.php) Example of setting workbook doc properties
-* not-ready [doc_custom_properties.php](../demos/doc_custom_properties.php) Example of setting custom doc properties
+* [hide_sheet.php](../demos/hide_sheet.php) Example of hiding a worksheet
+* [doc_properties.php](../demos/doc_properties.php) Example of setting workbook doc properties
+* [doc_custom_properties.php](../demos/doc_custom_properties.php) Example of setting custom doc properties
 * [worksheet_protection.php](../demos/worksheet_protection.php) Example of enabling worksheet protection
-* not-ready [hide_row_col.php](../demos/hide_row_col.php) Example of hiding worksheet rows and columns
-* not-ready [comments1.php](../demos/comments1.php) Example of adding cell comments to a worksheet
-* not-ready [comments2.php](../demos/comments2.php) Example of adding cell comments with options
+* [hide_row_col.php](../demos/hide_row_col.php) Example of hiding worksheet rows and columns
+* [comments1.php](../demos/comments1.php) Example of adding cell comments to a worksheet
+* [comments2.php](../demos/comments2.php) Example of adding cell comments with options
 * [macro.php](../demos/macro.php) Example of adding a VBA macro to a workbook
 * [panes.php](../demos/panes.php) Example of how to create worksheet panes
 * not-ready [chart.php](../demos/chart.php) Example of a simple column chart

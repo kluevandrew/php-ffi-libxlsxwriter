@@ -5,6 +5,7 @@ namespace FFILibXlsxWriter\Options;
 use FFI;
 use FFILibXlsxWriter\FFILibXlsxWriter;
 use FFILibXlsxWriter\Struct;
+use FFILibXlsxWriter\Structs\CharPointer;
 
 /**
  * Class CommentOptions
@@ -33,5 +34,13 @@ class CommentOptions extends Struct
         $ffi = FFILibXlsxWriter::ffi();
         $this->struct = $ffi->new('struct lxw_comment_options', false, false);
         $this->pointer = FFI::addr($this->struct);
+    }
+
+    protected function getStructuralProperties(): array
+    {
+        return [
+            'author' => CharPointer::class,
+            'font_name' => CharPointer::class,
+        ];
     }
 }

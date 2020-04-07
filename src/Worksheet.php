@@ -1020,7 +1020,7 @@ class Worksheet extends Sheet
      * @throws FFILibXlsxWriterException
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#a9efae5027e762c9a29f6afa547e4b2db
      */
-    public function worksheetOutlineSettings(bool $visible, bool $below, bool $right, bool $autoStyle): self
+    public function outlineSettings(bool $visible, bool $below, bool $right, bool $autoStyle): self
     {
         return $this->proxy(
             __METHOD__,
@@ -1043,7 +1043,7 @@ class Worksheet extends Sheet
      * @throws FFILibXlsxWriterException
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#a74121de7c4f67639b30f302d4af48eb4
      */
-    public function worksheetSetDefaultRow(float $height, bool $hideUnusedRows): self
+    public function setDefaultRow(float $height, bool $hideUnusedRows): self
     {
         return $this->proxy(
             __METHOD__,
@@ -1063,7 +1063,7 @@ class Worksheet extends Sheet
      * @throws FFILibXlsxWriterException
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#a8df6c0ce82172dafdd3e81923978bd4b
      */
-    public function worksheetSetVbaName(string $name): self
+    public function setVbaName(string $name): self
     {
         return $this->proxy(
             __METHOD__,
@@ -1079,7 +1079,7 @@ class Worksheet extends Sheet
      * @throws FFILibXlsxWriterException
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#aafb945c6f7f462e7c6eb24032ea4e61a
      */
-    public function worksheetShowComments(): self
+    public function showComments(): self
     {
         return $this->proxy(__METHOD__, 'show_comments');
     }
@@ -1091,7 +1091,7 @@ class Worksheet extends Sheet
      * @throws FFILibXlsxWriterException
      * @see http://libxlsxwriter.github.io/worksheet_8h.html#af196b0cb611f3abc800f3439f3bb8942
      */
-    public function worksheetSetCommentsAuthor(string $author): self
+    public function setCommentsAuthor(string $author): self
     {
         return $this->proxy(
             __METHOD__,

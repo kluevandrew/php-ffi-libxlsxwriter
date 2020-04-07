@@ -113,7 +113,7 @@ class WorksheetTest extends FFITestCase
             'rightToLeft' => [fn(Worksheet $worksheet) => $worksheet->rightToLeft()],
             'hideZero' => [fn(Worksheet $worksheet) => $worksheet->hideZero()],
             'worksheetOutlineSettings' => [
-                fn(Worksheet $worksheet) => $worksheet->worksheetOutlineSettings(
+                fn(Worksheet $worksheet) => $worksheet->outlineSettings(
                     true,
                     false,
                     true,
@@ -121,12 +121,12 @@ class WorksheetTest extends FFITestCase
                 )
             ],
             'worksheetSetDefaultRow' => [
-                fn(Worksheet $worksheet) => $worksheet->worksheetSetDefaultRow(10, false)
+                fn(Worksheet $worksheet) => $worksheet->setDefaultRow(10, false)
             ],
-            'worksheetSetVbaName' => [fn(Worksheet $worksheet) => $worksheet->worksheetSetVbaName('name')],
-            'worksheetShowComments' => [fn(Worksheet $worksheet) => $worksheet->worksheetShowComments()],
+            'worksheetSetVbaName' => [fn(Worksheet $worksheet) => $worksheet->setVbaName('name')],
+            'worksheetShowComments' => [fn(Worksheet $worksheet) => $worksheet->showComments()],
             'worksheetSetCommentsAuthor' => [
-                fn(Worksheet $worksheet) => $worksheet->worksheetSetCommentsAuthor('name')
+                fn(Worksheet $worksheet) => $worksheet->setCommentsAuthor('name')
             ],
         ];
     }
