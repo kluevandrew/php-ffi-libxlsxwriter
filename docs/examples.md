@@ -23,8 +23,8 @@ Example programs using libxlsxwriter:
 * [images.php](../demos/images.php) Example of adding images to a worksheet.
 * [image_buffer.php](../demos/image_buffer.php) Example of adding an image from a memory buffer.
 * [headers_footers.php](../demos/headers_footers.php) Example of adding worksheet headers/footers
-* not-ready [defined_name.php](../demos/defined_name.php) Example of how to create defined names
-* not-ready [outline.php](../demos/outline.php) Example of grouping and outlines
+* [defined_name.php](../demos/defined_name.php) Example of how to create defined names
+* [outline.php](../demos/outline.php) Example of grouping and outlines
 * not-ready [outline_collapsed.php](../demos/outline_collapsed.php) Example of grouping and collapsed outlines
 * [tab_colors.php](../demos/tab_colors.php) Example of how to set worksheet tab colors
 * not-ready [hide_sheet.php](../demos/hide_sheet.php) Example of hiding a worksheet

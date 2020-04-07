@@ -57,6 +57,8 @@ class WorkbookTest extends FFITestCase
                 )
             ],
             'setVbaName' => [fn(Workbook $workbook) => $workbook->setVbaName('name')],
+            'getWorksheets' => [fn(Workbook $workbook) => $workbook->getWorksheets()],
+            'getChartsheets' => [fn(Workbook $workbook) => $workbook->getChartsheets()],
         ];
     }
 

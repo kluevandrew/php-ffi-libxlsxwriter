@@ -403,4 +403,26 @@ class Workbook extends Struct implements DoNotFreeDirectly, Closable
             'defaultUrlFormat' => $this->getDefaultUrlFormat(),
         ];
     }
+
+    /**
+     * @return Worksheet[]
+     * @throws CallAfterCloseException
+     */
+    public function getWorksheets(): array
+    {
+        $this->throwIfClosed(__METHOD__);
+
+        return $this->worksheets;
+    }
+
+    /**
+     * @return Chartsheet[]
+     * @throws CallAfterCloseException
+     */
+    public function getChartsheets(): array
+    {
+        $this->throwIfClosed(__METHOD__);
+
+        return $this->chartsheets;
+    }
 }
